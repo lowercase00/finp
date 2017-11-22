@@ -1,0 +1,213 @@
+<!-- ledger.html-->
+
+{% extends "base.html" %}
+{% block title %}Ledger{% endblock %}
+
+
+{% block content %}
+
+
+<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+
+
+
+
+<!-- BOTÃO + INSERIR -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ledger_input">Inserir</button>
+<div class="modal fade" id="ledger_input" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Input</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form class="form-horizontal form-label-left" method="POST" action="/process">
+                            
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-3">Data</label>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <input type="text" class="form-control" id="data" name="data">
+                                    <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-3">Crédito</label>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <input type="text" class="form-control" name="cred">
+                                    <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-3">Débito</label>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <input type="text" class="form-control" id="action" name="deb">
+                                    <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-3">Descrição</label>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <input type="text" class="form-control" id="action" name="dsc">
+                                    <span class="form-control-feedback right" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-3">Valor</label>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <input type="number" class="form-control" id="action" name="valor">
+                                    <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-9 col-md-offset-3">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-success">Inserir</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- BOTÃO + INSERIR -->
+
+
+
+<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+
+
+
+<!-- BOTÃO + UPLOAD -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#upload">Upload</button>
+<div class="modal fade" id="upload" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload de Arquivos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1">Você pode fazer o upload de um arquivo CSV ou OFX</label>
+                        <input type="file" class="form-control-file" id="exampleFormControlFile1" name="file" action="upload">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Upload</button>
+                	<input type="submit" value="Upload">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- BOTÃO + UPLOAD -->
+
+
+
+
+<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+
+
+
+
+<!--TABELA DE DADOS-->
+<div class="page-title">
+    <div class="title_left">
+        <h3>Teste</h3>
+    </div>
+    <div class="title_right">
+        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Teste</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Settings 1</a>
+                            </li>
+                            <li><a href="#">Settings 2</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table id="outroex" name="exemplo" class="display">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Cred</th>
+                            <th>Deb</th>
+                            <th>Dsc</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--TABELA DE DADOS-->
+
+<!-- <script src="static/build/js/getdata.js"></script> -->
+
+
+<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+
+
+<!--Script AJAX JSON para DataTable-->
+<!-- <script type="text/javascript" src="scripts/getdata2.js"></script> -->
+<!--Script AJAX JSON para DataTable-->
+
+
+<script>
+	$(document).ready(function() {
+	    $('#outroex').dataTable({
+	        "ajax": {
+	            "url": "static/files/data.json",
+	            "dataSrc": "",
+	            "type": "POST",
+	            "columns": [
+	                { "data": "data" },
+	                { "data": "dsc" },
+	                { "data": "valor" },
+	                { "data": "deb" },
+	                { "data": "cred" }
+	            ]
+	        }
+	    });
+	});
+</script>
+ 
+
+
+{% endblock %}

@@ -1,0 +1,68 @@
+<!-- reports.html-->
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+
+<!-- /graph area -->
+<div class="container fluid">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Income Statement <small>Sessions</small></h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content2">
+            <div id="graph_area" style="width:100%; height:100%;"></div>
+        </div>
+    </div>
+</div>
+<!-- /graph area -->
+
+
+
+
+<!-- bar charts group -->
+<div class="container fluid">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Balance Sheet</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content1">
+            <div id="graph_bar_group" style="width:100%; height:280px;"></div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<!-- /bar charts group -->
+{% endblock %}
