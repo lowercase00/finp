@@ -2,6 +2,7 @@
 
 from flask import render_template
 from app import app
+from app import data_cnx
 
 
 @app.route('/', methods=['GET', 'POST'])
