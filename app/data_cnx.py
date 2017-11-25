@@ -3,19 +3,36 @@ from flask import render_template, request
 import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
 import csv
+import mysql.connector as mariadb
+import json
+import jsonify
+import collections
+import itertools
+
+
+
+#####################################################################################
+#########					 												#########
+#########						INPUT VIA FORMULARIO 						#########
+#########																	#########
+#####################################################################################
+
 
 
 #Conecta base de dados e cria o cursor
 cnx = mariadb.connect(user='root', password='', database='test')
 cursor = cnx.cursor()
 
-#decorator que puxa informacoes e manda para a base
-@app.route('/process', methods=['GET', 'POST'])
-def process():
+
+#decorator que puxa informacoes do formulario e manda para a base
+@app.route('/put_data', methods=['GET', 'POST'])
+def put_data():
+	
 	print "1. it is processing..."
 	add_reg = ("INSERT INTO base "
 	   	   "(data, cred, deb, dsc, valor) "
 	       "VALUES (%s, %s, %s, %s, %s)")
+	
 	print "2. query feita..."
 
 	data = request.form['data']
@@ -43,11 +60,17 @@ def process():
 
 	ult_reg = cursor.lastrowid
 
-	cursor.close()
-	cnx.close()
+	# cursor.close()
+	# cnx.close()
 
 	return redirect(url_for('ledger'))
 
+
+#####################################################################################
+#########					 												#########
+#########						INPUT VIA CSV 								#########
+#########																	#########
+#####################################################################################
 
 
 # @app.route('/upload', methods=['GET', 'POST'])
@@ -78,3 +101,28 @@ def process():
 	
 # 	print "6. finalizado!"
 #     return redirect(url_for('ledger'))
+
+
+
+
+#####################################################################################
+#########					 												#########
+#########						EXPORT PARA TABELA 							#########
+#########																	#########
+#####################################################################################
+
+
+query = "SELECT ID, data, cred, deb, dsc, valor FROM base"
+cursor.execute(query)
+
+rows = cursor.fetchall()
+
+def get_data():
+    desc = cursor.description
+    lista = [dict(itertools.izip([col[0] for col in desc], row)) 
+        for row in rows]
+    return lista
+
+
+results = get_data()
+json_results = json.dumps(results)

@@ -7,6 +7,14 @@
 {% block content %}
 
 
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table-locale-all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table-locale-all.min.js"></script> -->
+
+
 <!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
 
 
@@ -25,7 +33,7 @@
                     </div>
                     <div class="x_content">
                         <br />
-                        <form class="form-horizontal form-label-left" method="POST" action="/process">
+                        <form class="form-horizontal form-label-left" method="POST" action="/put_data">
                             
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-3">Data</label>
@@ -105,7 +113,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Upload</button>
-                	<input type="submit" value="Upload">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
@@ -160,52 +167,56 @@
                 </ul>
                 <div class="clearfix"></div>
             </div>
-            <div class="x_content">
-                <table id="outroex" name="exemplo" class="display">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Cred</th>
-                            <th>Deb</th>
-                            <th>Dsc</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                </table>
+            <div class="x_content" id="jsGrid">
+                    <table id="exemplo"></table>
             </div>
         </div>
     </div>
 </div>
 <!--TABELA DE DADOS-->
 
-<!-- <script src="static/build/js/getdata.js"></script> -->
-
-
-<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
-
-
-<!--Script AJAX JSON para DataTable-->
-<!-- <script type="text/javascript" src="scripts/getdata2.js"></script> -->
-<!--Script AJAX JSON para DataTable-->
-
-
 <script>
-	$(document).ready(function() {
-	    $('#outroex').dataTable({
-	        "ajax": {
-	            "url": "static/files/data.json",
-	            "dataSrc": "",
-	            "type": "POST",
-	            "columns": [
-	                { "data": "data" },
-	                { "data": "dsc" },
-	                { "data": "valor" },
-	                { "data": "deb" },
-	                { "data": "cred" }
-	            ]
-	        }
-	    });
-	});
+{
+    loadData: function(filter) {
+        return $.ajax({
+            type: "GET",
+            url: "/get_data",
+            data: filter
+        });
+    },
+    
+    insertItem: function(item) {
+        return $.ajax({
+            type: "POST",
+            url: "/put_data",
+            data: item
+        });
+    },
+    
+    updateItem: function(item) {
+        return $.ajax({
+            type: "PUT",
+            url: "/items",
+            data: item
+        });
+    },
+    
+    deleteItem: function(item) {
+        return $.ajax({
+            type: "DELETE",
+            url: "/items",
+            data: item
+        });
+    },
+}
+ 
+ 
+//     $(".config-panel input[type=checkbox]").on("click", function() {
+//         var $cb = $(this);
+//         $("#jsGrid").jsGrid("option", $cb.attr("id"), $cb.is(":checked"));
+//     });
+ 
+// });
 </script>
  
 
