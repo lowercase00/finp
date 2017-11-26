@@ -59,18 +59,6 @@
     <script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
     <script src="static/vendors/moment/min/moment.min.js"></script>
     <script src="static/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <script src="static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="static/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="static/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="static/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
     <script src="static/vendors/jszip/dist/jszip.min.js"></script>
     <script src="static/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="static/vendors/pdfmake/build/vfs_fonts.js"></script>
@@ -78,10 +66,6 @@
     <script src="static/vendors/raphael/raphael.min.js"></script>
     <script src="static/vendors/morris.js/morris.min.js"></script>
     <script src="static/build/js/custom.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/fc-3.2.3/rg-1.0.2/datatables.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
 <!-- Scripts -->
 
 
@@ -190,8 +174,6 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ url_for('static', filename='production/images/img.jpg') }}" alt="">Caio Carvalho
-                    <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
                     <li><a href="javascript:;"> Profile</a></li>
@@ -214,7 +196,6 @@
                   <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                     <li>
                       <a>
-                        <span class="image"><img src="{{ url_for('static', filename='production/images/img.jpg') }}" alt="Profile Image" /></span>
                         <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -226,7 +207,6 @@
                     </li>
                     <li>
                       <a>
-                        <span class="image"><img src="{{ url_for('static', filename='production/images/img.jpg') }}" alt="Profile Image" /></span>
                         <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>

@@ -42,4 +42,5 @@ def files(**kwargs):
 
 @app.route('/get_data', methods=['GET', 'POST'])
 def get_data():
-    return jsonify(get_data())
+	results = export_data()
+	return json.dumps(results)

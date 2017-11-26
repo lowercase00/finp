@@ -17,6 +17,19 @@
 
 <!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
 
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/fc-3.2.3/rg-1.0.2/datatables.min.js"></script>
+<script src="static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="static/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="static/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="static/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 
 
 
@@ -167,7 +180,7 @@
                 </ul>
                 <div class="clearfix"></div>
             </div>
-            <div class="x_content" id="jsGrid">
+            <div class="x_content" id="exemplo">
                     <table id="exemplo"></table>
             </div>
         </div>
@@ -176,40 +189,14 @@
 <!--TABELA DE DADOS-->
 
 <script>
-{
-    loadData: function(filter) {
-        return $.ajax({
-            type: "GET",
-            url: "/get_data",
-            data: filter
-        });
-    },
-    
-    insertItem: function(item) {
-        return $.ajax({
-            type: "POST",
-            url: "/put_data",
-            data: item
-        });
-    },
-    
-    updateItem: function(item) {
-        return $.ajax({
-            type: "PUT",
-            url: "/items",
-            data: item
-        });
-    },
-    
-    deleteItem: function(item) {
-        return $.ajax({
-            type: "DELETE",
-            url: "/items",
-            data: item
-        });
-    },
-}
- 
+$(document).ready(function() {
+    $('#examplo').DataTable( {
+        "ajax": {
+            "url": "/get_data",
+            "dataSrc": "",
+        },
+    } );
+} );
  
 //     $(".config-panel input[type=checkbox]").on("click", function() {
 //         var $cb = $(this);
