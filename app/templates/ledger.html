@@ -30,6 +30,10 @@
 <script src="static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
 <script src="static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<script src="static/vendors/editablegrid/js/editablegrid-2.1.0-49.js"></script>
+<link rel="stylesheet" href="static/vendors/editablegrid/css/responsive.css" type="text/css" media="screen">
+<link rel="stylesheet" href="static/vendors/editablegrid/css/style.css" type="text/css" media="screen">
+
 
 
 
@@ -188,15 +192,26 @@
 </div>
 <!--TABELA DE DADOS-->
 
+
+<script type="text/javascript">
+    
+                window.onload = function() {
+                editableGrid = new EditableGrid("DemoGridJSON"); 
+                editableGrid.tableLoaded = function() { this.renderGrid("exemplo", "testgrid"); };
+                editableGrid.loadJSON("static/files/grid.json");
+            } 
+
+
+</script>
 <script>
-$(document).ready(function() {
-    $('#examplo').DataTable( {
-        "ajax": {
-            "url": "/get_data",
-            "dataSrc": "",
-        },
-    } );
-} );
+// $(document).ready(function() {
+//     $('#examplo').DataTable( {
+//         "ajax": {
+//             "url": "/get_data",
+//             "dataSrc": "",
+//         },
+//     } );
+// } );
  
 //     $(".config-panel input[type=checkbox]").on("click", function() {
 //         var $cb = $(this);

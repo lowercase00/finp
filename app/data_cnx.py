@@ -10,6 +10,10 @@ import collections
 import itertools
 
 
+
+
+
+
 @app.route('/put_data', methods=['GET', 'POST'])
 def put_data():
     cnx = mariadb.connect(user='root', password='', database='test')
@@ -32,6 +36,10 @@ def put_data():
     return redirect(url_for('ledger'))
 
 
+
+
+
+
 @app.route('/export_data', methods=['GET', 'POST'])
 def export_data():
     cnx = mariadb.connect(user='root', password='', database='test')
@@ -44,9 +52,8 @@ def export_data():
     desc = cursor.description
     cnx.close()
     
-    
+
     lista = [dict(itertools.izip([col[0] for col in desc], row)) 
         for row in rows]
 
     return lista    
-    # return json.dumps(lista)
