@@ -20,10 +20,10 @@ import itertools
 
 
 def export_data():
-    cnx = mariadb.connect(user='root', password='', database='test')
+    cnx = mariadb.connect(user='root', password='', database='base_completa')
     cursor = cnx.cursor()
 
-    query = "SELECT ID, data, cred, deb, dsc, valor FROM base_teste"
+    query = "SELECT DataCaixa, Credito, Debito, valor FROM ledger WHERE Credito='Conta Corrente Itau'"
     
     cursor.execute(query)
     rows = cursor.fetchall()
@@ -34,7 +34,11 @@ def export_data():
     lista = [dict(itertools.izip([col[0] for col in desc], row)) 
         for row in rows]
 
-    return json.dumps(lista)
+    return lista
 
 results = export_data()
+
+with open('datateste.json', 'wb+') as fp:
+    json.dump(results, fp)
+
 print results

@@ -1,18 +1,19 @@
 import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
 import csv, json, jsonify, collections, itertools
+import pandas as pd
 
-def export_data_bs():
+def export_data():
 
     cnx = mariadb.connect(user='root', password='', database='base_completa')
     cursor = cnx.cursor()
     print "1. Conecting..."
 
     chart_of_accounts = [
-                        'Conta Corrente Itau',
-                        'Cartao Itau Master',
-                        'Cartao Itau VISA',
-                        'Carteira'
+                        "Conta Corrente Itau",
+                        "Cartao Itau Master",
+                        "Cartao Itau VISA",
+                        "Carteira"
                         ]
 
     for account in chart_of_accounts:
@@ -33,26 +34,15 @@ def export_data_bs():
                 """
         print "3. Query written"
 
-        cursor.execute(query, account)
+        df=pd.read_sql_query(query, account)
         print "4. Query executed"
 
-        rows = cursor.fetchall()
-        print "5. Fetchall"
+        print df
 
-        desc = cursor.description
-        print "6. Cursor description"
-    
-        lista = [dict(itertools.izip([col[0] for col in desc], row)) 
-            for row in rows]
-        
-        cnx.commit()
-
-        print account
-        print json.dumps(lista)
 
     return lista
 
-results = export_data_bs()
+results = export_data()
 
 # with open('base_conta222.json', 'wb+') as fp:
 #     json.dump(results, fp)

@@ -2,7 +2,7 @@ import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
 import csv, json, jsonify, collections, itertools
 
-def export_data_bs():
+def export_data():
 
     cnx = mariadb.connect(user='root', password='', database='base_completa')
     cursor = cnx.cursor()
@@ -52,7 +52,7 @@ def export_data_bs():
 
     return lista
 
-results = export_data_bs()
+results = export_data()
 
 # with open('base_conta222.json', 'wb+') as fp:
 #     json.dump(results, fp)
