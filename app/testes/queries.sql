@@ -63,3 +63,6 @@ FROM (
     ) AS T,
 (SELECT @total:=0) AS n;
 
+
+#Pegar plano de contas
+SELECT nivel4 FROM pdc
