@@ -1,26 +1,31 @@
 from app import app
-from flask import render_template, request
-import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
-import csv
 import mysql.connector as mariadb
-import json
-import jsonify
-import collections
-import itertools
+import json, jsonify, collections, itertools, csv
+import config as cfg
 
 
 
 
+# Estabilishes a connection to the ledger
 
 
+
+# Get form input and saves it to ledger
+#
 @app.route('/put_data', methods=['GET', 'POST'])
 def put_data():
-    cnx = mariadb.connect(user='root', password='', database='test')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
     cursor = cnx.cursor()
-    add_reg = ("INSERT INTO base_teste "
-	   	      "(data, cred, deb, dsc, valor) "
-	          "VALUES (%s, %s, %s, %s, %s)")
+    
+    add_reg =   """
+                INSERT INTO ledger_teste
+                (data, cred, deb, dsc, valor)
+                VALUES (%s, %s, %s, %s, %s)
+                """
 	
     data = request.form['data']
     cred = request.form['cred']
@@ -39,13 +44,20 @@ def put_data():
 
 
 
-
+# Export ledger and arranges data in JSON format to be shown on data grid
+#
 @app.route('/export_data', methods=['GET', 'POST'])
 def export_data():
-    cnx = mariadb.connect(user='root', password='', database='test')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
     cursor = cnx.cursor()
 
-    query = "SELECT ID, data, cred, deb, dsc, valor FROM base_teste"
+    query = """
+            SELECT ID, data, cred, deb, dsc, valor
+            FROM base_teste
+            """
     
     cursor.execute(query)
     rows = cursor.fetchall()

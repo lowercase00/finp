@@ -1,21 +1,30 @@
 import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
 import csv, json, jsonify, collections, itertools
+import config as cfg
 
+#Exports chart of account by level, and/or by report
 
 ############## CONTAS POR NIVEL #############
 
 
 def get_level1_accounts():
     
-    level = "nivel1"
+    level = "nivel2"
+    table = "pdc_teste"
+    params = (level, table)
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+
     cursor = cnx.cursor()
 
     query = """
-            SELECT DISTINCT(%s) FROM pdc
-            """ % (level)
+            SELECT DISTINCT(%s)
+            FROM %s
+            """ % (params)
 
     cursor.execute(query)
     rows = cursor.fetchall()        
@@ -27,13 +36,20 @@ def get_level1_accounts():
 def get_level2_accounts():
     
     level = "nivel2"
+    table = "pdc_teste"
+    params = (level, table)
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+
     cursor = cnx.cursor()
 
     query = """
-            SELECT DISTINCT(%s) FROM pdc
-            """ % (level)
+            SELECT DISTINCT(%s)
+            FROM %s
+            """ % (params)
 
     cursor.execute(query)
     rows = cursor.fetchall()        
@@ -45,13 +61,20 @@ def get_level2_accounts():
 def get_level3_accounts():
     
     level = "nivel3"
+    table = "pdc_teste"
+    params = (level, table)
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+
     cursor = cnx.cursor()
 
     query = """
-            SELECT DISTINCT(%s) FROM pdc
-            """ % (level)
+            SELECT DISTINCT(%s)
+            FROM %s
+            """ % (params)
 
     cursor.execute(query)
     rows = cursor.fetchall()        
@@ -63,13 +86,20 @@ def get_level3_accounts():
 def get_level4_accounts():
     
     level = "nivel4"
+    table = "pdc_teste"
+    params = (level, table)
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+    
     cursor = cnx.cursor()
 
     query = """
-            SELECT DISTINCT(%s) FROM pdc
-            """ % (level)
+            SELECT DISTINCT(%s)
+            FROM %s
+            """ % (params)
 
     cursor.execute(query)
     rows = cursor.fetchall()        
@@ -88,13 +118,21 @@ def get_level4_bs_accounts():
     
     level = "nivel4"
     report = "Balance Sheet"
-    params = (level, report)
+    table = "pdc_teste"
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    params = (level, table, report)
+
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+    
     cursor = cnx.cursor()
 
     query = """
-            SELECT DISTINCT(%s) FROM pdc WHERE report="%s"
+            SELECT DISTINCT(%s)
+            FROM %s
+            WHERE report="%s"
             """ % (params)
 
     cursor.execute(query)
@@ -110,13 +148,21 @@ def get_level4_is_accounts():
     
     level = "nivel4"
     report = "Income Statement"
-    params = (level, report)
+    table = "pdc_teste"
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    params = (level, table, report)
+
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+    
     cursor = cnx.cursor()
 
     query = """
-            SELECT DISTINCT(%s) FROM pdc WHERE report="%s"
+            SELECT DISTINCT(%s)
+            FROM %s
+            WHERE report="%s"
             """ % (params)
 
     cursor.execute(query)

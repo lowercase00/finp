@@ -1,14 +1,24 @@
 import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
 import csv, json, jsonify, collections, itertools
-import pandas as pd
+
+# Export calculations for each account
+
 
 def export_data():
 
-    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+                            )
+
     cursor = cnx.cursor()
-    
-    infos = "SELECT nivel4 FROM pdc"
+
+    level = "nivel4"
+
+    infos = """
+    		SELECT %s FROM pdc
+    		""" % (level)
     
     cursor.execute(infos)
     infos = cursor.fetchall()
@@ -19,7 +29,11 @@ def export_data():
 
 	for account in chart_of_accounts:
 		
-		cnx = mariadb.connect(user='root', password='', database='base_completa')
+	    cnx = mariadb.connect(  user=cfg.db['user'],
+	                            password=cfg.db['pwd'],
+	                            database=cfg.db['baseteste']
+	                            )
+
 		cursor = cnx.cursor()
 
 		params = (account, account)
@@ -32,7 +46,7 @@ def export_data():
 						SUM(IF(Credito="%s", valor, 0))-
 						SUM(IF(Debito="%s", valor, 0))
 					) AS Fluxo
-					FROM ledger
+					FROM ledger_teste
 					GROUP BY YEAR(DATA), MONTH(DATA)
 					) AS T,
 				(SELECT @total:=0) AS n;
