@@ -5,22 +5,28 @@ import pandas as pd
 
 def export_data():
 
-	infos = [
-			"Conta Corrente Itau",
-			"Cartao Itau Master",
-			"Cartao Itau VISA",
-			"Carteira"
-			]    
+    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cursor = cnx.cursor()
+    
+    infos = "SELECT nivel4 FROM pdc"
+    
 
-	chart_of_accounts = list(infos)          
+    cursor.execute(infos)
+    infos = cursor.fetchall()
+
+    chart_of_accounts = list(infos)
+    
+    cnx.close()
+           
 
 	for account in chart_of_accounts:
-		
+		print "1. Loop Begins"
 		cnx = mariadb.connect(user='root', password='', database='base_completa')
 		cursor = cnx.cursor()
 
 		params = (account, account)
 		
+		print "2. Database Connected"
 		query = """
 				SELECT Y, M,(@total := @total + Fluxo) AS ValorTotal
 				FROM (
@@ -34,16 +40,25 @@ def export_data():
 					) AS T,
 				(SELECT @total:=0) AS n;
 				""" % (params)
-
-		cursor.execute(query)
-		rows = cursor.fetchall()
-		desc = cursor.description
+		print "3. Query written"
 		
+		cursor.execute(query)
+		print "4. Query executed"
+
+		rows = cursor.fetchall()
+		print "5. Fetchall"
+
+		desc = cursor.description
+		print "6. Cursor description"
+	
 		lista = [dict(itertools.izip([col[0] for col in desc], row)) 
 			for row in rows]
+		
+		print account
 
 		cnx.commit()
 		cnx.close()
+		print "7. Committed and closed"
 
 		print json.dumps(lista)
 

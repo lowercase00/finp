@@ -5,14 +5,17 @@ import pandas as pd
 
 def export_data():
 
-	infos = [
-			"Conta Corrente Itau",
-			"Cartao Itau Master",
-			"Cartao Itau VISA",
-			"Carteira"
-			]    
+    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cursor = cnx.cursor()
+    
+    infos = "SELECT nivel4 FROM pdc"
+    
+    cursor.execute(infos)
+    infos = cursor.fetchall()
 
-	chart_of_accounts = list(infos)          
+    chart_of_accounts = list(infos)
+    
+    cnx.close()        
 
 	for account in chart_of_accounts:
 		
@@ -50,7 +53,3 @@ def export_data():
 	return lista
 
 results = export_data()
-
-# print df
-# df.plot()
-# plt.show()

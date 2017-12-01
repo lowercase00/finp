@@ -20,10 +20,6 @@ def get_level1_accounts():
     cursor.execute(query)
     rows = cursor.fetchall()        
     cnx.commit()
-
-    print level
-    print json.dumps(rows)
-    
     level1_accounts = json.dumps(rows)
 
 
@@ -42,10 +38,6 @@ def get_level2_accounts():
     cursor.execute(query)
     rows = cursor.fetchall()        
     cnx.commit()
-
-    print level
-    print json.dumps(rows)
-
     level2_accounts = json.dumps(rows)
 
 
@@ -64,10 +56,6 @@ def get_level3_accounts():
     cursor.execute(query)
     rows = cursor.fetchall()        
     cnx.commit()
-
-    print level
-    print json.dumps(rows)
-
     level3_accounts = json.dumps(rows)
 
 
@@ -86,11 +74,11 @@ def get_level4_accounts():
     cursor.execute(query)
     rows = cursor.fetchall()        
     cnx.commit()
-
-    print level
-    print json.dumps(rows)
-
     level4_accounts = json.dumps(rows)
+
+
+
+
 
 
 ############## CONTAS POR NIVEL POR RELATORIO #############
@@ -112,8 +100,27 @@ def get_level4_bs_accounts():
     cursor.execute(query)
     rows = cursor.fetchall()        
     cnx.commit()
-
-    print level
-    print json.dumps(rows)
-
     level4_bs_accounts = json.dumps(rows)
+    level4_bs_accounts_list = list(rows)
+
+
+
+
+def get_level4_is_accounts():
+    
+    level = "nivel4"
+    report = "Income Statement"
+    params = (level, report)
+
+    cnx = mariadb.connect(user='root', password='', database='base_completa')
+    cursor = cnx.cursor()
+
+    query = """
+            SELECT DISTINCT(%s) FROM pdc WHERE report="%s"
+            """ % (params)
+
+    cursor.execute(query)
+    rows = cursor.fetchall()        
+    cnx.commit()
+    level4_is_accounts = json.dumps(rows)
+    level4_is_accounts_list = list(rows)   

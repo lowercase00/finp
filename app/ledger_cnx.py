@@ -19,8 +19,8 @@ def put_data():
     cnx = mariadb.connect(user='root', password='', database='test')
     cursor = cnx.cursor()
     add_reg = ("INSERT INTO base_teste "
-	   	   "(data, cred, deb, dsc, valor) "
-	       "VALUES (%s, %s, %s, %s, %s)")
+	   	      "(data, cred, deb, dsc, valor) "
+	          "VALUES (%s, %s, %s, %s, %s)")
 	
     data = request.form['data']
     cred = request.form['cred']
