@@ -2,10 +2,9 @@ import mysql.connector as mariadb
 from flask import Flask, render_template, request, redirect, url_for
 import csv, json, jsonify, collections, itertools
 
-# Export calculations for each account
 
-
-def export_data():
+#Export values for Balance Sheet Accounts (Stock/Accumulated Values)
+def export_bs_data():
 
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
@@ -14,21 +13,25 @@ def export_data():
 
     cursor = cnx.cursor()
 
-    level = "nivel4"
+    pdc = "pdc_teste"
+    level = "Level 4"
+    report = "Balance Sheet"
+    params = (pdc, level, report)
 
     infos = """
-    		SELECT %s FROM pdc
-    		""" % (level)
+    		SELECT account FROM %s WHERE level = %s AND report = %s
+    		""" % (params)
+    
     
     cursor.execute(infos)
     infos = cursor.fetchall()
 
-    chart_of_accounts = list(infos)
+    bs_accounts = list(infos)
     
     cnx.close()        
 
-	for account in chart_of_accounts:
-		
+	#Loops through Balance Sheet accounts and retrieves accumulated values
+	for account in bs_accounts:
 	    cnx = mariadb.connect(  user=cfg.db['user'],
 	                            password=cfg.db['pwd'],
 	                            database=cfg.db['baseteste']
@@ -66,4 +69,72 @@ def export_data():
 
 	return lista
 
-results = export_data()
+
+
+
+#Export values for Income Statement Accounts (Flow Values)
+def export_is_data():
+
+	#Conects to database using config.py information
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseteste']
+							)
+
+    cursor = cnx.cursor()
+
+	#Parameters to get income statement accounts in specific chart of accounts table
+    pdc = "pdc_teste"
+    level = "Level 4"
+    report = "Income Statement"
+    params = (pdc, level, report)
+
+    infos = """
+    		SELECT account FROM %s WHERE level = %s AND report = %s
+    		""" % (params)
+    
+    
+    cursor.execute(infos)
+    infos = cursor.fetchall()
+
+    #income statement accounts turned into a list
+    is_accounts = list(infos)
+    
+    cnx.close()        
+
+    #loop through income statement accounts and dumps data into JSON format
+	for account in is_accounts:
+		
+	    cnx = mariadb.connect(  user=cfg.db['user'],
+	                            password=cfg.db['pwd'],
+	                            database=cfg.db['baseteste']
+	                            )
+
+		cursor = cnx.cursor()
+
+		params = (account, account)
+		
+		query = """
+				SELECT year(data), month(data), 
+				    (
+				        SUM(IF(Credito=%s, valor, 0))-
+				        SUM(IF(Debito=%s, valor, 0))
+				    )
+				AS Fluxo    
+				FROM base
+				GROUP BY YEAR(data), MONTH(data)
+				""" % (params)
+
+		cursor.execute(query)
+		rows = cursor.fetchall()
+		desc = cursor.description
+		
+		lista = [dict(itertools.izip([col[0] for col in desc], row)) 
+			for row in rows]
+
+		cnx.commit()
+		cnx.close()
+
+		print json.dumps(lista)
+
+	return lista
