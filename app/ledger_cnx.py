@@ -23,17 +23,18 @@ def put_data():
     
     add_reg =   """
                 INSERT INTO ledger_teste
-                (data, cred, deb, dsc, valor)
+                (data, credito, debito, descricao, valor)
                 VALUES (%s, %s, %s, %s, %s)
                 """
 	
     data = request.form['data']
-    cred = request.form['cred']
-    deb = request.form['deb']
-    dsc = request.form['dsc']
+    cred = request.form['credito']
+    deb = request.form['debito']
+    desc = request.form['descricao']
     valor = request.form['valor']
 
-    registro = (data, cred, deb, dsc, valor)
+
+    registro = (data, cred, deb, desc, valor)
 
     cursor.execute(add_reg, registro)
     cnx.commit()
@@ -46,8 +47,8 @@ def put_data():
 
 # Export ledger and arranges data in JSON format to be shown on data grid
 #
-@app.route('/export_data', methods=['GET', 'POST'])
-def export_data():
+@app.route('/export_ledger', methods=['GET', 'POST'])
+def export_ledger():
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
                             database=cfg.db['baseteste']
@@ -55,8 +56,9 @@ def export_data():
     cursor = cnx.cursor()
 
     query = """
-            SELECT ID, data, cred, deb, dsc, valor
-            FROM base_teste
+            SELECT ID, data, credito, debito, descricao, valor
+            FROM ledger_teste
+            ORDER BY data DESC
             """
     
     cursor.execute(query)
@@ -64,8 +66,7 @@ def export_data():
     desc = cursor.description
     cnx.close()
     
-
-    lista = [dict(itertools.izip([col[0] for col in desc], row)) 
+    ledger_completo = [dict(itertools.izip([col[0] for col in desc], row)) 
         for row in rows]
 
-    return lista    
+    return json.dumps(ledger_completo)    
