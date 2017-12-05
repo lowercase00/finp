@@ -190,7 +190,7 @@ if (typeof jQuery === 'undefined') {
                                        </div></div>';
 
                         // Add toolbar column cells.
-                        $table.find('tr:gt(0)').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+                        $table.find('tbody>tr').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
                     }
                 }
             }
@@ -369,7 +369,13 @@ if (typeof jQuery === 'undefined') {
          */
         function ajax(action)
         {
-            var serialize = $table.find('.tabledit-input').serialize() + '&action=' + action;
+            var serialize = $table.find('.tabledit-input').serialize()
+
+            if (!serialize) {
+                return false;
+            }
+
+            serialize += '&action=' + action;
 
             var result = settings.onAjax(action, serialize);
 
@@ -541,7 +547,7 @@ if (typeof jQuery === 'undefined') {
             /**
              * Change event when input is a select element.
              */
-            $table.on('change', 'select.tabledit-input:visible', function() {
+            $table.on('change', 'select.tabledit-input:visible', function(event) {
                 if (event.handled !== true) {
                     // Submit and update the column.
                     Edit.submit($(this).parent('td'));
@@ -565,11 +571,11 @@ if (typeof jQuery === 'undefined') {
         }
 
         /**
-         * Keyup event on document element.
-         *
+         * Keyup event on table element.
+         * 
          * @param {object} event
          */
-        $(document).on('keyup', function(event) {
+        $table.on('keyup', function(event) {
             // Get input element with focus or confirmation button.
             var $input = $table.find('.tabledit-input:visible');
             var $button = $table.find('.tabledit-confirm-button');

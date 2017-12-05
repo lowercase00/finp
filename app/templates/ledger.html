@@ -50,7 +50,7 @@
                     </div>
                     <div class="x_content">
                         <br />
-                        <form class="form-horizontal form-label-left" method="POST" action="/put_data">
+                        <form class="form-horizontal form-label-left" method="POST" action="/_journal_entry">
                             
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-3">Data</label>
@@ -195,32 +195,14 @@
 
 <script type="text/javascript">
     
-                window.onload = function() {
-                editableGrid = new EditableGrid("DemoGridJSON"); 
-                editableGrid.tableLoaded = function() { this.renderGrid("exemplo", "testgrid"); };
-                editableGrid.loadJSON("static/files/grid.json");
+    window.onload = function() {
+        editableGrid = new EditableGrid("DemoGridJSON"); 
+        editableGrid.tableLoaded = function() { this.renderGrid("exemplo", "testgrid"); };
+        editableGrid.loadJSON("static/files/grid.json");
             } 
 
 
 </script>
-<script>
-// $(document).ready(function() {
-//     $('#examplo').DataTable( {
-//         "ajax": {
-//             "url": "/get_data",
-//             "dataSrc": "",
-//         },
-//     } );
-// } );
- 
-//     $(".config-panel input[type=checkbox]").on("click", function() {
-//         var $cb = $(this);
-//         $("#jsGrid").jsGrid("option", $cb.attr("id"), $cb.is(":checked"));
-//     });
- 
-// });
-</script>
- 
 
 
 {% endblock %}

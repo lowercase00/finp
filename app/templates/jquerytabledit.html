@@ -1,6 +1,9 @@
+
+
 <!-- ledger.html-->
 
 {% extends "base.html" %} {% block title %}Ledger{% endblock %}
+
 
 
 <!--Recursos-->
@@ -20,6 +23,7 @@
 <link href="static/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 <link href="static/build/css/custom.min.css" rel="stylesheet">
 <!--Recursos-->
+
 
 
 {% block content %}
@@ -127,15 +131,20 @@
 
 
 <!--TABELA DE DADOS-->
-<div class="container">
-  <h2>Basic Table</h2>
-  <p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>            
-  <table data-toggle="table" class="table" id="dados" name="dados">
+<div class="container">            
+  <table class="table table-bordered table-striped" id="general_ledger">
     <thead>
       <tr>
-        <th>data</th>
+        <th>Data</th>
+        <th>Crédito</th>
+        <th>Débito</th>
+        <th>Descrição</th>
+        <th>Valor</th>
       </tr>
     </thead>
+    <tbody>
+
+    </tbody>
   </table>
 </div>
 <!--TABELA DE DADOS-->
@@ -144,48 +153,70 @@
 
 <!--SCRIPT PARA A TABELA--> 
 <script>
-$(document).ready(function(){
-    $.getJSON("../files/data.json", function(data){
-        var dados = '';
-        $.each(data, function(key, value){
-            dados += '<tr>';
-            dados += '<td>'+value.data+'</td>';
+    function viewData(){
+        $.ajax({
+            url: 'process.php?p=view',
+            method: 'GET'
+        }).done(function(data){
+            $('tbody').html(data)
+            tableData()
+        })
+    }
+    function tableData(){
+        $('#general_ledger').Tabledit({
+            url: 'process.php',
+            eventType: 'dblclick',
+            editButton: true,
+            deleteButton: true,
+            hideIdentifier: false,
+            buttons: {
+                edit: {
+                    class: 'btn btn-sm btn-warning',
+                    html: '<span class="glyphicon glyphicon-pencil"></span> Edit',
+                    action: 'edit'
+                },
+                delete: {
+                    class: 'btn btn-sm btn-danger',
+                    html: '<span class="glyphicon glyphicon-trash"></span> Trash',
+                    action: 'delete'
+                },
+                save: {
+                    class: 'btn btn-sm btn-success',
+                    html: 'Save'
+                },
+                restore: {
+                    class: 'btn btn-sm btn-warning',
+                    html: 'Restore',
+                    action: 'restore'
+                },
+                confirm: {
+                    class: 'btn btn-sm btn-default',
+                    html: 'Confirm'
+                }
+            },
+            columns: {
+                identifier: [0, 'id'],
+                editable: [[1, 'data'],[2, 'credito'], [3, 'debito'], [4, 'descricao'], [5, 'valor']]
+            },
+            onSuccess: function(data, textStatus, jqXHR) {
+                viewData()
+            },
+            onFail: function(jqXHR, textStatus, errorThrown) {
+                console.log('onFail(jqXHR, textStatus, errorThrown)');
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            },
+            onAjax: function(action, serialize) {
+                console.log('onAjax(action, serialize)');
+                console.log(action);
+                console.log(serialize);
+            }
         });
-        $('#dados').append(dados);
-    });
-});
+    }
 </script>
 <!--SCRIPT PARA A TABELA-->
 
-
-<!--GRÁFICO-->
-<div class="container fluid">
-    <div class="x_panel">
-        <div class="x_title">
-            <h2>Income Statement <small>Sessions</small></h2>
-            <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Settings 1</a>
-                        </li>
-                        <li><a href="#">Settings 2</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a class="close-link"><i class="fa fa-close"></i></a>
-                </li>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
-        <div class="x_content2">
-            <div id="graph_area" style="width:100%; height:100%;"></div>
-        </div>
-    </div>
-</div>
-<!-- /graph area -->
 
 
 

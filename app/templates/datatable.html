@@ -21,9 +21,6 @@
 <link href="static/build/css/custom.min.css" rel="stylesheet">
 <!--Recursos-->
 
-<script src="static/build/js/jquery.tabledit.min.js"></script>
-<script src="static/build/js/jquery.tabledit.js"></script>
-
 
 {% block content %}
 
@@ -130,14 +127,9 @@
 
 
 <!--TABELA DE DADOS-->
-<div class="container">
-  <h2>Basic Table</h2>
-  <p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>            
-  <table data-toggle="table" class="table" id="dados" name="dados">
+<div class="container">          
+  <table data-toggle="table" class="table" id="example" name="example">
     <thead>
-      <tr>
-        <th>data</th>
-      </tr>
     </thead>
   </table>
 </div>
@@ -147,48 +139,26 @@
 
 <!--SCRIPT PARA A TABELA--> 
 <script>
-$(document).ready(function(){
-    $.getJSON("../files/data.json", function(data){
-        var dados = '';
-        $.each(data, function(key, value){
-            dados += '<tr>';
-            dados += '<td>'+value.data+'</td>';
-        });
-        $('#dados').append(dados);
+$(document).ready(function () {
+  $.get('/clientside_table', function (data) {
+    $('#example').DataTable({
+      data: data.data,
+      paging: true,
+      dom: 'frtipB',
+      columns: [
+        {"data": "data", "title": "Column A"},
+        {"data": "credito", "title": "Column B"},
+        {"data": "debito", "title": "Column C"},
+        {"data": "descricao", "title": "Column D"},
+        {"data": "valor", "title": "Column D"},
+
+      ]
     });
+  });
 });
 </script>
 <!--SCRIPT PARA A TABELA-->
 
-
-<!--GRÁFICO-->
-<div class="container fluid">
-    <div class="x_panel">
-        <div class="x_title">
-            <h2>Income Statement <small>Sessions</small></h2>
-            <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Settings 1</a>
-                        </li>
-                        <li><a href="#">Settings 2</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a class="close-link"><i class="fa fa-close"></i></a>
-                </li>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
-        <div class="x_content2">
-            <div id="graph_area" style="width:100%; height:100%;"></div>
-        </div>
-    </div>
-</div>
-<!-- /graph area -->
 
 
 

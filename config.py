@@ -5,9 +5,9 @@ DEBUG = True
 
 #Database connection
 db = 	{
-		'user' : 'root',
-		'pwd' : ''
-		'host' : 'localhost'
-		'baseteste' : 'base_teste'
-		'baseprod' : 'base'
+		'user': 'root',
+		'pwd': '',
+		'host': 'localhost',
+		'baseteste': 'base_teste',
+		'baseprod': 'base'
 		}
