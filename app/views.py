@@ -3,10 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector as mariadb
 import json, jsonify, collections, itertools, csv
 import config as cfg
-import ledger
+import journal
 import accounts
-import reports
-
+from reports import is_char_test
 
 
 
@@ -17,14 +16,14 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/_ledger', methods=['GET', 'POST'])
-def ledger():
-    return render_template("ledger.html")
+@app.route('/_journal', methods=['GET', 'POST'])
+def journal():
+    return render_template("journal.html")
 
 
 @app.route('/_reports')
 def reports():
-    return render_template("reports.html")
+    return is_char_test()
 
 
 @app.route('/_forecast')
@@ -32,11 +31,19 @@ def forecast():
     return render_template("forecast.html")
 
 
-@app.route('/_pdc')
-def pdc():
-    return render_template("pdc.html")
+@app.route('/_budget')
+def budget():
+    return render_template("budget.html")
 
 
+@app.route('/_accounts')
+def accounts():
+    return render_template("accounts.html")
+
+
+@app.route('/_bills')
+def bills():
+    return render_template("bills.html")
 
 
 
@@ -62,10 +69,6 @@ def editablegrid():
 @app.route('/_xeditable', methods=['GET', 'POST'])
 def xeditable():
     return render_template("xeditable.html")
-
-
-
-
 
 
 @app.route('/_chartest', methods=['GET', 'POST'])

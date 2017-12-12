@@ -1,6 +1,5 @@
 
-#Soma conta para um determinado mês
-
+######################### Soma conta para um determinado mês
 SELECT 	(
 			(SELECT SUM(valor) FROM base WHERE credito='Conta Corrente Itau' and MONTH(data)=10 and YEAR(data)=2017)
 			-
@@ -9,12 +8,12 @@ SELECT 	(
 
 
 
-#TimeSeries - conta quantas entradas por ano
+######################### TimeSeries - conta quantas entradas por ano
 SELECT YEAR(data) AS Year,COUNT(*) AS base FROM base GROUP BY YEAR(data);
 
 
 
-#soma todas as movimentacoes agrupando por mes e ano
+######################### soma todas as movimentacoes agrupando por mes e ano
 SELECT YEAR(data) AS Year,
 MONTH(data) AS Month,
 SUM(valor) AS base
@@ -23,7 +22,7 @@ GROUP BY YEAR(data),MONTH(data)
 
 
 
-#soma todas as movimentacoes de uma conta especifica agrupando por mes e ano
+######################### Soma todas as movimentacoes de uma conta especifica agrupando por mes e ano
 SELECT data, base, (@total := @total + base) AS ValorTotal
 FROM (
 	SELECT data,
@@ -38,7 +37,9 @@ FROM (
 
 
 
-# FLUXO - soma todas as movimentacoes de uma conta (credito + debito) e agrupa por mes/ano - apenas fluxo
+
+
+######################### FLUXO - soma todas as movimentacoes de uma conta (credito + debito) e agrupa por mes/ano - apenas fluxo
 SELECT year(data), month(data), 
 	(
 		SUM(IF(Credito='Conta Corrente Itau', valor, 0))-
@@ -50,7 +51,36 @@ GROUP BY YEAR(data), MONTH(data)
 
 
 
-# BALANCO - soma todas as movimentacoes de uma conta (credito + debito) e agrupa por mes/ano
+
+#########################FLUXO - data em uma só coluna
+SELECT DATE_FORMAT(datecash, '%m-%y') as DATA, 
+	(
+		SUM(IF(credit='Conta Corrente Itau', value, 0))-
+		SUM(IF(debit='Conta Corrente Itau', value, 0))
+	)
+AS Fluxo	
+FROM journal_test
+GROUP BY YEAR(datecash), MONTH(datecash)
+
+
+
+
+######################### INSERT Date - FROM Pthon to MYSQL
+now = datetime.date(2009, 5, 5)
+cursor.execute("INSERT INTO table (name, id, datecolumn) VALUES (%s, %s, '%s')",("name", 4, now))
+
+
+
+
+
+######################### From MYSQL datetime to Python datetime
+parsing a date time from MySQL default format into python:
+timestamp: time.strptime(mysql_timestamp, '%Y-%m-%d %H:%M:%S')
+
+
+
+
+######################### BALANCO - soma todas as movimentacoes de uma conta (credito + debito) e agrupa por mes/ano
 SELECT Y, M,(@total := @total + Fluxo) AS ValorTotal
 FROM (
         SELECT year(data) AS Y, month(data) AS M, 
@@ -65,12 +95,12 @@ FROM (
 
 
 
-#Pegar plano de contas
+######################### Pegar plano de contas
 SELECT nivel4 FROM pdc
 
 
 
-#Adicionar ID baseado na ordem de alguma coluna
+######################### Adicionar ID baseado na ordem de alguma coluna
 ALTER TABLE ledger_teste ADD COLUMN new_id INT NOT NULL;
 SET @x = 0;
 UPDATE ledger_teste SET new_id = (@x:=@x+1) ORDER BY data ASC;
@@ -79,7 +109,7 @@ ALTER TABLE ledger_teste CHANGE new_id new_id INT NOT NULL AUTO_INCREMENT;
 
 
 
-#Substituir texto
+######################### Substituir texto
 UPDATE [tablename]
 SET [fieldname] = REPLACE([fieldname], 'text to find', 'text to replace with')
 WHERE [fieldname] LIKE '%text to find%'
@@ -89,7 +119,9 @@ SET Debito = REPLACE(Debito, 'Poupanca', 'Poupança')
 WHERE Debito LIKE '%Poupanca%'
 
 
-#Mostrar arvore para Balance Sheet
+
+
+######################## Mostrar arvore para Balance Sheet
 SELECT
 t1.account AS Level1,
 t2.account AS Level2,
@@ -106,7 +138,9 @@ WHERE
 t1.account = 'Ativo' OR
 t1.account = 'Passivo';
 
-#Mostrar arvore para Income Statement
+
+
+######################### Mostrar arvore para Income Statement
 SELECT
 t1.account AS Level1,
 t2.account AS Level2,

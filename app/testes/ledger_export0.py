@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector as mariadb
 import json, jsonify, collections, itertools, csv
+import datetime
 
 def export_ledger():
 
@@ -8,8 +9,9 @@ def export_ledger():
     cursor = cnx.cursor()
 
     query = """
-            SELECT ID, data, credito, debito, descricao, valor
-            FROM ledger_teste
+            SELECT DATE_FORMAT(datecash, '%m-%y')
+            FROM journal_test
+            GROUP BY  year(datecash), month(datecash)
             ORDER BY id DESC
             """
     
@@ -17,10 +19,10 @@ def export_ledger():
     rows = cursor.fetchall()
     desc = cursor.description
     cnx.close()
-    
-    ledger_completo = [dict(itertools.izip([col[0] for col in desc], row)) 
-        for row in rows]
 
-    return rows
+    dates = [i[0] for i in rows]
+    dates = dates.strptime(dates)
+
+    return dates
 
 print export_ledger()

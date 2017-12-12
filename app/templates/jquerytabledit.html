@@ -153,67 +153,36 @@
 
 <!--SCRIPT PARA A TABELA--> 
 <script>
-    function viewData(){
-        $.ajax({
-            url: 'process.php?p=view',
-            method: 'GET'
-        }).done(function(data){
-            $('tbody').html(data)
-            tableData()
-        })
-    }
-    function tableData(){
-        $('#general_ledger').Tabledit({
-            url: 'process.php',
-            eventType: 'dblclick',
-            editButton: true,
-            deleteButton: true,
-            hideIdentifier: false,
-            buttons: {
-                edit: {
-                    class: 'btn btn-sm btn-warning',
-                    html: '<span class="glyphicon glyphicon-pencil"></span> Edit',
-                    action: 'edit'
-                },
-                delete: {
-                    class: 'btn btn-sm btn-danger',
-                    html: '<span class="glyphicon glyphicon-trash"></span> Trash',
-                    action: 'delete'
-                },
-                save: {
-                    class: 'btn btn-sm btn-success',
-                    html: 'Save'
-                },
-                restore: {
-                    class: 'btn btn-sm btn-warning',
-                    html: 'Restore',
-                    action: 'restore'
-                },
-                confirm: {
-                    class: 'btn btn-sm btn-default',
-                    html: 'Confirm'
-                }
-            },
-            columns: {
-                identifier: [0, 'id'],
-                editable: [[1, 'data'],[2, 'credito'], [3, 'debito'], [4, 'descricao'], [5, 'valor']]
-            },
-            onSuccess: function(data, textStatus, jqXHR) {
-                viewData()
-            },
-            onFail: function(jqXHR, textStatus, errorThrown) {
-                console.log('onFail(jqXHR, textStatus, errorThrown)');
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            },
-            onAjax: function(action, serialize) {
-                console.log('onAjax(action, serialize)');
-                console.log(action);
-                console.log(serialize);
-            }
-        });
-    }
+    $('#example6').Tabledit({
+        url: 'example.php',
+        columns: {
+            identifier: [0, 'id'],
+            editable: [[1, 'username'], [2, 'email'], [3, 'avatar', '{"1": "Black Widow", "2": "Captain America", "3": "Iron Man"}']]
+        },
+        onDraw: function() {
+            console.log('onDraw()');
+        },
+        onSuccess: function(data, textStatus, jqXHR) {
+            console.log('onSuccess(data, textStatus, jqXHR)');
+            console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+        },
+        onFail: function(jqXHR, textStatus, errorThrown) {
+            console.log('onFail(jqXHR, textStatus, errorThrown)');
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        },
+        onAlways: function() {
+            console.log('onAlways()');
+        },
+        onAjax: function(action, serialize) {
+            console.log('onAjax(action, serialize)');
+            console.log(action);
+            console.log(serialize);
+        }
+    });
 </script>
 <!--SCRIPT PARA A TABELA-->
 
