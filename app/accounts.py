@@ -9,17 +9,16 @@ import views
 
 ################## COMPLETE CHART OF ACCOUNTS ##################
 
-@app.route('/_all_accounts', methods=['GET'])
 def get_all_accounts():
 
-    pdc = "pdc_teste"
-    params = (pdc, pdc, pdc, pdc)
-    
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
-                            database=cfg.db['baseteste']
+                            database=cfg.db['baseprod']
                             )
 
+    accounts = "accounts"
+    params = (accounts, accounts, accounts, accounts)
+    
     cursor = cnx.cursor()
 
     query = """
@@ -54,7 +53,6 @@ def get_all_accounts():
 
 ################## BALANCE SHEET ACCOUNTS ##################
 
-@app.route('/_bs_accounts', methods=['GET'])
 def get_bs_accounts():
 
     cnx = mariadb.connect(  user=cfg.db['user'],
@@ -64,8 +62,8 @@ def get_bs_accounts():
 
     cursor = cnx.cursor()
 
-    pdc = "pdc_teste"
-    params = (pdc, pdc, pdc, pdc)
+    accounts = "accounts"
+    params = (accounts, accounts, accounts, accounts)
 
     query = """
     SELECT
@@ -97,18 +95,17 @@ def get_bs_accounts():
 
 ################## INCOME STATEMENT ACCOUNTS ##################
 
-@app.route('/_is_accounts', methods=['GET'])
 def get_is_accounts():
 
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
-                            database=cfg.db['baseteste']
+                            database=cfg.db['db_finp']
                             )
 
     cursor = cnx.cursor()
 
-    pdc = "pdc_teste"
-    params = (pdc, pdc, pdc, pdc)
+    accounts = "accounts"
+    params = (accounts, accounts, accounts, accounts)
 
     query = """
     SELECT
@@ -134,8 +131,6 @@ def get_is_accounts():
     cnx.commit()
     is_accounts = json.dumps(rows)
     return is_accounts
-
-
 
 
 

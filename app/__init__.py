@@ -6,7 +6,7 @@ from flask import Flask
 app = Flask(__name__, instance_relative_config=True)
 
 # Load the views
-from app import views, models
+from app import views
 
 #refer to SQLAlchmey
 # db = SQLAlchemy(app)

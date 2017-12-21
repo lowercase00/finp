@@ -5,7 +5,8 @@ import json, jsonify, collections, itertools, csv
 import config as cfg
 import journal
 import accounts
-from reports import is_char_test
+from reports import chart_test
+from journal import export_journal
 
 
 
@@ -16,19 +17,17 @@ def index():
     return render_template("index.html")
 
 
+
+@app.route('/_accounts')
+def accounts():
+    return render_template("accounts.html")
+
+
+
 @app.route('/_journal', methods=['GET', 'POST'])
 def journal():
-    return render_template("journal.html")
+    return export_journal()
 
-
-@app.route('/_reports')
-def reports():
-    return is_char_test()
-
-
-@app.route('/_forecast')
-def forecast():
-    return render_template("forecast.html")
 
 
 @app.route('/_budget')
@@ -36,29 +35,36 @@ def budget():
     return render_template("budget.html")
 
 
-@app.route('/_accounts')
-def accounts():
-    return render_template("accounts.html")
+
+@app.route('/_reports', methods=['GET', 'POST'])
+def reports():        
+    if request.method == "GET":
+        return render_template("reports.html")
+    else:
+        return chart_test()
 
 
-@app.route('/_bills')
-def bills():
-    return render_template("bills.html")
 
+@app.route('/_forecast')
+def forecast():
+    return render_template("forecast.html")
 
 
 
 
 ################# TEMPLATE VIEWS #################
 
-@app.route('/_jquerytabledit', methods=['GET', 'POST'])
-def jquerytabledit():
-    return render_template("jquerytabledit.html")
-
 
 @app.route('/_datatable', methods=['GET', 'POST'])
 def datatable():
     return render_template("datatable.html")
+
+
+
+@app.route('/_jquerytabledit', methods=['GET', 'POST'])
+def jquerytabledit():
+    return render_template("jquerytabledit.html")
+
 
 
 @app.route('/_editablegrid', methods=['GET', 'POST'])

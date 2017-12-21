@@ -185,7 +185,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content" id="exemplo">
-                    <table id="exemplo"></table>
+                    <table id="example"></table>
             </div>
         </div>
     </div>
@@ -195,13 +195,18 @@
 
 <script type="text/javascript">
     
-    window.onload = function() {
-        editableGrid = new EditableGrid("DemoGridJSON"); 
-        editableGrid.tableLoaded = function() { this.renderGrid("exemplo", "testgrid"); };
-        editableGrid.loadJSON("static/files/grid.json");
-            } 
+var journal = {{ journal|safe }}
 
-
+$(document).ready(function() {
+    $('#example').DataTable( {
+        data: journal,
+        columns: [
+            { title: "Date" },
+            { title: "Credit" },
+            { title: "Debit" }
+        ]
+    } );
+} );
 </script>
 
 

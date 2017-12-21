@@ -4,26 +4,25 @@ import mysql.connector as mariadb
 import json, jsonify, collections, itertools, csv
 import config as cfg
 import views
+import datetime
 
 
 
 
-# class LedgerConnection():
+##################### EXPORT JOURNAL #####################
 
-##################### EXPORT LEDGER #####################
-
-@app.route('/_export_ledger', methods=['GET', 'POST'])
-def export_ledger():
+def export_journal():
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
-                            database=cfg.db['baseteste']
+                            database=cfg.db['baseprod']
                             )
     cursor = cnx.cursor()
 
     query = """
-            SELECT ID, data, credito, debito, descricao, valor
-            FROM ledger_teste
-            ORDER BY data DESC
+            SELECT ID, date_cash, credit, debit, description, value
+            FROM journal
+            ORDER BY date_cash DESC
+            LIMIT 50
             """
     
     cursor.execute(query)
@@ -31,10 +30,17 @@ def export_ledger():
     desc = cursor.description
     cnx.close()
     
-    ledger_completo = [dict(itertools.izip([col[0] for col in desc], row)) 
-        for row in rows]
+    journal = [list(i) for i in rows]
 
-    return json.dumps(ledger_completo)
+
+    journal = [ ['data 1', 'credito 1', 'item 1'],
+                ['data 2', 'credito 2', 'item 2'],
+                ['data 3', 'credito 3', 'item 3'],
+                ['data 4', 'credito 4', 'item 4'],
+                ['data 5', 'credito 5', 'item 5']]
+
+    return render_template('journal.html', journal=journal)
+
 
 
 
@@ -43,18 +49,17 @@ def export_ledger():
 
 ##################### INPUT IN LEDGER #####################
 
-@app.route('/_journal_entry', methods=['GET', 'POST'])
 def journal_entry():
     
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
-                            database=cfg.db['baseteste']
+                            database=cfg.db['baseprod']
                             )
     cursor = cnx.cursor()
     
     add_reg =   """
-                INSERT INTO ledger_teste
-                (data, credito, debito, descricao, valor)
+                INSERT INTO journal
+                (date_cash, credit, debit, description, value)
                 VALUES (%s, %s, %s, %s, %s)
                 """
 	
@@ -80,17 +85,15 @@ def journal_entry():
 
 
 
-##################### EDIT ENTRIES #####################
+# ##################### EDIT ENTRIES #####################
 
-@app.route('/_edit_ledger', methods=['GET', 'POST'])
-def edit_ledger():    
+# def edit_ledger():    
 
-    cnx = mariadb.connect(  user=cfg.db['user'],
-                            password=cfg.db['pwd'],
-                            database=cfg.db['baseteste']
-                            )
-    cursor = cnx.cursor()
-
+#     cnx = mariadb.connect(  user=cfg.db['user'],
+#                             password=cfg.db['pwd'],
+#                             database=cfg.db['baseteste']
+#                             )
+#     cursor = cnx.cursor()
 
 
 
@@ -99,16 +102,16 @@ def edit_ledger():
 
 
 
-###################### DELETE ENTRIES #####################
 
-@app.route('/_delete_ledger', methods=['GET', 'POST'])
-def delete_ledger():
+# ###################### DELETE ENTRIES #####################
 
-    cnx = mariadb.connect(  user=cfg.db['user'],
-                            password=cfg.db['pwd'],
-                            database=cfg.db['baseteste']
-                            )
-    cursor = cnx.cursor()
+# def delete_ledger():
+
+#     cnx = mariadb.connect(  user=cfg.db['user'],
+#                             password=cfg.db['pwd'],
+#                             database=cfg.db['baseteste']
+#                             )
+#     cursor = cnx.cursor()
 
 
 

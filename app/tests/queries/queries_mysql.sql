@@ -52,15 +52,15 @@ GROUP BY YEAR(data), MONTH(data)
 
 
 
-#########################FLUXO - data em uma só coluna
-SELECT DATE_FORMAT(datecash, '%m-%y') as DATA, 
+######################### Income Statement (flow account) SUM "value" if "this account" if "this month"
+SELECT DATE_FORMAT(date_cash, '%m-%y') as DATA, 
 	(
 		SUM(IF(credit='Conta Corrente Itau', value, 0))-
 		SUM(IF(debit='Conta Corrente Itau', value, 0))
 	)
 AS Fluxo	
-FROM journal_test
-GROUP BY YEAR(datecash), MONTH(datecash)
+FROM journal
+GROUP BY YEAR(date_cash), MONTH(date_cash)
 
 
 
@@ -80,7 +80,7 @@ timestamp: time.strptime(mysql_timestamp, '%Y-%m-%d %H:%M:%S')
 
 
 
-######################### BALANCO - soma todas as movimentacoes de uma conta (credito + debito) e agrupa por mes/ano
+######################### Balance Sheet - SUM "value" if "this account" if "this month" and accumulate with the former date
 SELECT Y, M,(@total := @total + Fluxo) AS ValorTotal
 FROM (
         SELECT year(data) AS Y, month(data) AS M, 
@@ -157,3 +157,48 @@ WHERE
 t1.account = 'Receitas' OR
 t1.account = 'Despesas' OR
 t1.account = 'Não Operacionais';
+
+
+####################### Get accounts list for a specific report and level
+SELECT code, account FROM accounts WHERE report = "Income Statement" AND level = "Level 4"
+
+
+
+####################### Creates a function to get account list for a specific report
+DELIMITER //
+
+CREATE OR REPLACE PROCEDURE get_accounts (param1 VARCHAR(50))
+ BEGIN
+  SELECT account FROM accounts WHERE level = 'Level 4' AND report = param1;
+ END;
+//
+
+DELIMITER ;
+
+CALL get_accounts('Balance Sheet');
+
+
+
+############################## Creates a function to get a specific report
+
+SELECT date_format(date_cash, '%b-%y'), Conta, ROUND(sum(valor), 2), report
+
+FROM (
+
+	SELECT act_debit.report AS report, date_cash, debit AS Conta, SUM(CASE WHEN act_debit.nature = 0 THEN value ELSE -value END) AS valor 
+	FROM journal 
+	JOIN accounts AS act_debit ON act_debit.account = journal.debit
+	GROUP BY debit, YEAR(date_cash), MONTH(date_cash)
+
+UNION
+
+	SELECT act_credit.report AS report, date_cash, credit AS Conta, SUM(CASE WHEN act_credit.nature = 0 THEN value ELSE -value END) AS valor
+	FROM journal
+	JOIN accounts AS act_credit ON act_credit.account = journal.credit
+	GROUP BY credit, YEAR(date_cash), MONTH(date_cash)
+
+) AS aliastabela
+
+WHERE (report="Income Statement")
+GROUP BY Conta, YEAR(date_cash), MONTH(date_cash)
+ORDER BY date_cash ASC

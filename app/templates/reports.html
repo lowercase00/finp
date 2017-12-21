@@ -26,6 +26,17 @@
             </ul>
             <div class="clearfix"></div>
         </div>
+            <form class="form-horizontal form-label-left" method="POST" action="/_reports">
+                <div class="form-group">
+                    <label>Série 1</label>
+                    <input class="form-control" id="series1" name="series1" placeholder="Enter the first series">
+                </div>
+                <div class="form-group">
+                    <label>Série 2</label>
+                    <input class="form-control" id="series2" name="series2" placeholder="Enter the second series">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         <div id={{ chartID|safe }} class="chart" style="height: 100px; width: 90%"></div>
         <script>
             var chart_id = {{ chartID|safe }}

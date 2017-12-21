@@ -5,33 +5,34 @@ import json
 
 # Pega resultado da query da MySQL e passa para DataFrame no Pandas
 
-cnx = mariadb.connect(user='root', password='', database='base_completa')
+cnx = mariadb.connect(user='root', password='', database='base_teste')
 cursor = cnx.cursor()
 
 
 query = """
-		SELECT Y, M,(@total := @total + Fluxo) AS ValorTotal
+		SELECT datecash,(@total := @total + Fluxo) AS ValorTotal
 		FROM (
-	        SELECT year(data) AS Y, month(data) AS M, 
+	        SELECT datecash, 
 	            (
-	                SUM(IF(Credito='Conta Corrente Itau', valor, 0))-
-	                SUM(IF(Debito='Conta Corrente Itau', valor, 0))
+	                SUM(IF(credit='Conta Corrente Itau', value, 0))-
+	                SUM(IF(debit='Conta Corrente Itau', value, 0))
 	            ) AS Fluxo
-		        FROM ledger
-		        GROUP BY YEAR(DATA), MONTH(DATA)
+		        FROM journal_test
+		        GROUP BY YEAR(datecash), MONTH(datecash)
 		    ) AS T,
 		(SELECT @total:=0) AS n;
 		"""
 
 df = pd.read_sql(query, cnx)
-df.to_json()
+df['datecash'] = pd.to_datetime(df['datecash'])
+
+
+
 print "Query realizada"
 cnx.close()
 print "Conexao encerrada"
 
-with open('databp.json', 'wb+'):
-    df.to_json()
-
+print df
 print "JSON Exportado."
 
 # print df

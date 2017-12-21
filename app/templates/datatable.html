@@ -139,23 +139,21 @@
 
 <!--SCRIPT PARA A TABELA--> 
 <script>
-$(document).ready(function () {
-  $.get('/clientside_table', function (data) {
-    $('#example').DataTable({
-      data: data.data,
-      paging: true,
-      dom: 'frtipB',
-      columns: [
-        {"data": "data", "title": "Column A"},
-        {"data": "credito", "title": "Column B"},
-        {"data": "debito", "title": "Column C"},
-        {"data": "descricao", "title": "Column D"},
-        {"data": "valor", "title": "Column D"},
 
-      ]
-    });
-  });
-});
+var journal = {{ journal }}
+
+$(document).ready(function() {
+    $('#example').DataTable( {
+        data: journal,
+        columns: [
+            { title: "Date" },
+            { title: "Credit" },
+            { title: "Debit" },
+            { title: "Description." },
+            { title: "Value" }
+        ]
+    } );
+} );
 </script>
 <!--SCRIPT PARA A TABELA-->
 

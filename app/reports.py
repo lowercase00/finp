@@ -10,66 +10,42 @@ import views
 
 ##################### EXPORT BALANCE SHEET ACCOUNTS (STOCK) #####################
 
-def export_bs_data():
+def export_bs():
 
-	pdc = "account_teste"
-	level = "Level 4"
-	report = "Balance Sheet"
-	params = (pdc, level, report)
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseprod']
+                            )
+    cursor = cnx.cursor()
 
-	cnx = mariadb.connect(  user=cfg.db['user'],
-							password=cfg.db['pwd'],
-							database=cfg.db['baseteste']
-							)
+    query = """
+            SELECT date_format(date_cash, '%m-%y') as data, Conta, ROUND(sum(valor), 2) as Value, parent, code
 
-	cursor = cnx.cursor()
+                FROM (
 
-	infos = """
-			SELECT account FROM %s WHERE level = %s AND report = %s
-			""" % (params)
-	
-	
-	cursor.execute(infos)
-	infos = cursor.fetchall()
-	bs_accounts = list(infos)
-	cnx.close()        
+                    SELECT parent, code, act_debit.report AS report, date_cash, debit AS Conta, SUM(CASE WHEN act_debit.nature = 0 THEN value ELSE -value END) AS valor 
+                    FROM journal 
+                    RIGHT JOIN accounts AS act_debit ON act_debit.account = journal.debit
+                    GROUP BY debit, YEAR(date_cash), MONTH(date_cash)
 
-	for account in bs_accounts:
-		cnx = mariadb.connect(  user=cfg.db['user'],
-								password=cfg.db['pwd'],
-								database=cfg.db['baseteste']
-								)
+                UNION
 
-		cursor = cnx.cursor()
-		params = (account, account)
-		
-		query = """
-				SELECT Y, M,(@total := @total + Fluxo) AS ValorTotal
-				FROM (
-				SELECT year(data) AS Y, month(data) AS M, 
-					(
-						SUM(IF(credit="%s", valor, 0))-
-						SUM(IF(debit="%s", valor, 0))
-					) AS Fluxo
-					FROM journal_test
-					GROUP BY YEAR(DATA), MONTH(DATA)
-					) AS T,
-				(SELECT @total:=0) AS n;
-				""" % (params)
+                    SELECT parent, code, act_credit.report AS report, date_cash, credit AS Conta, SUM(CASE WHEN act_credit.nature = 0 THEN value ELSE -value END) AS valor
+                    FROM journal
+                    RIGHT JOIN accounts AS act_credit ON act_credit.account = journal.credit
+                    GROUP BY credit, YEAR(date_cash), MONTH(date_cash)
 
-		cursor.execute(query)
-		rows = cursor.fetchall()
-		desc = cursor.description
-		
-		lista = [dict(itertools.izip([col[0] for col in desc], row)) 
-			for row in rows]
+                ) AS aliastabela
 
-		cnx.commit()
-		cnx.close()
+            WHERE (report="Balance Sheet")
+            GROUP BY Conta, YEAR(date_cash), MONTH(date_cash)
+            ORDER BY date_cash ASC
+            """
 
-		print json.dumps(lista)
+    df = pandas.read_sql(query, cnx)
+    report_bs = pandas.pivot_table(df, values='Value', index='Conta', columns='data')
 
-	return lista
+    print df
 
 
 
@@ -79,64 +55,42 @@ def export_bs_data():
 
 ##################### EXPORT INCOME STATEMENT ACCOUNTS (FLOW) #####################
 
-def export_is_data():
+def export_is():
 
-	pdc = "account_teste"
-	level = "Level 4"
-	report = "Income Statement"
-	params = (pdc, level, report)
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                        password=cfg.db['pwd'],
+                        database=cfg.db['baseprod']
+                        )
+    cursor = cnx.cursor()
 
-	cnx = mariadb.connect(  user=cfg.db['user'],
-							password=cfg.db['pwd'],
-							database=cfg.db['baseteste']
-							)
+    query = """
+            SELECT date_format(date_cash, '%m-%y') as data, Conta, ROUND(sum(valor), 2) as Value, parent, code
 
-	cursor = cnx.cursor()
+                FROM (
 
-	infos = """
-			SELECT account FROM %s WHERE level = %s AND report = %s
-			""" % (params)
-	
-	
-	cursor.execute(infos)
-	infos = cursor.fetchall()
-	is_accounts = list(infos)
-	cnx.close()        
+                    SELECT parent, code, act_debit.report AS report, date_cash, debit AS Conta, SUM(CASE WHEN act_debit.nature = 0 THEN value ELSE -value END) AS valor 
+                    FROM journal 
+                    RIGHT JOIN accounts AS act_debit ON act_debit.account = journal.debit
+                    GROUP BY debit, YEAR(date_cash), MONTH(date_cash)
 
-	for account in is_accounts:
-		
-		cnx = mariadb.connect(  user=cfg.db['user'],
-								password=cfg.db['pwd'],
-								database=cfg.db['baseteste']
-								)
+                UNION
 
-		cursor = cnx.cursor()
-		params = (account, account)
-		
-		query = """
-				SELECT year(data), month(data), 
-					(
-						SUM(IF(credit=%s, valor, 0))-
-						SUM(IF(debit=%s, valor, 0))
-					)
-				AS Fluxo    
-				FROM journal_test
-				GROUP BY YEAR(data), MONTH(data)
-				""" % (params)
+                    SELECT parent, code, act_credit.report AS report, date_cash, credit AS Conta, SUM(CASE WHEN act_credit.nature = 0 THEN value ELSE -value END) AS valor
+                    FROM journal
+                    RIGHT JOIN accounts AS act_credit ON act_credit.account = journal.credit
+                    GROUP BY credit, YEAR(date_cash), MONTH(date_cash)
 
-		cursor.execute(query)
-		rows = cursor.fetchall()
-		desc = cursor.description
-		
-		lista = [dict(itertools.izip([col[0] for col in desc], row)) 
-			for row in rows]
+                ) AS aliastabela
 
-		cnx.commit()
-		cnx.close()
+            WHERE (report="Income Statement")
+            GROUP BY Conta, YEAR(date_cash), MONTH(date_cash)
+            ORDER BY date_cash ASC
+            """
 
-		print json.dumps(lista)
+    df = pandas.read_sql(query, cnx)
+    report_is = pandas.pivot_table(df, values='Value', index='Conta', columns='data')
 
-	return lista
+    print df
 
 
 
@@ -148,82 +102,87 @@ def export_is_data():
 
 ##################### EXPORT HIGHCHART DATASET (FLOW) #####################
 
-def is_char_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 350):
+def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 350):
 
-	cnx = mariadb.connect(user='root', password='', database='base_teste')
-	cursor = cnx.cursor()
-	conta1 = "Beneficios"
-	params1 = (conta1, conta1)
+    cnx = mariadb.connect(  user=cfg.db['user'],
+                            password=cfg.db['pwd'],
+                            database=cfg.db['baseprod']
+                            )
+    cursor = cnx.cursor()
 
-	query_is = """
-			SELECT 
-			(
-				SUM(IF(Credito="%s", valor, 0))-
-				SUM(IF(Debito="%s", valor, 0))
-			)
-			AS Fluxo	
-			FROM journal_test
-			GROUP BY YEAR(data), MONTH(data)
-			ORDER BY Year(data), MONTH(data) DESC
-			""" % params1
+    conta1 = request.form['series1']
+    # conta1 = "Estacionamento"
+    params1 = (conta1, conta1)
 
-
-	cursor.execute(query_is)
-	rows = cursor.fetchall()
-	desc = cursor.description
-	salario = [i[0] for i in rows]
-
-
-	conta3 = "Estacionamento"
-	params3 = (conta3, conta3)
-
-	query_is2 = """
-			SELECT 
-			(
-				SUM(IF(Credito="%s", valor, 0))-
-				SUM(IF(Debito="%s", valor, 0))
-			)
-			AS Fluxo	
-			FROM journal_test
-			GROUP BY YEAR(data), MONTH(data)
-			ORDER BY Year(data), MONTH(data) DESC
-			""" % params3
+    query_is =  """
+                SELECT 
+                ROUND((
+                    SUM(IF(credit="%s", value, 0))-
+                    SUM(IF(debit="%s", value, 0))
+                ),2)
+                AS Fluxo    
+                FROM journal
+                GROUP BY YEAR(date_cash), MONTH(date_cash)
+                ORDER BY Year(date_cash), MONTH(date_cash) DESC
+                """ % params1
 
 
-	cursor.execute(query_is2)
-	rows = cursor.fetchall()
-	desc = cursor.description
-	
-	combustivel = [i[0] for i in rows]
-	# lista = [dict(itertools.izip([col[0] for col in desc], row)) 
-	# 	for row in rows]
+    cursor.execute(query_is)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    series1 = [i[0] for i in rows]
 
-	cnx.commit()
+    conta2 = request.form['series2']
+    # conta2 = "Salario"
+    params2 = (conta2, conta2)
 
-	query_datas = 	"""
-					SELECT DATE_FORMAT(data, '%b-%y') FROM journal_test
-					group by month(data), year(data) order by data asc
-					"""
-
-	cursor.execute(query_datas)
-	rows = cursor.fetchall()
-	desc = cursor.description
-	# datas = [i[0] for i in rows]
-
-	cnx.commit()
-
-	datas = [ 	"Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015", "Dez-2015",
-				"Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015",
-				"Out-2015", "Nov-2015", "Dez-2015", "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015",
-				"Jul-2015", "Ago-2015", "Set-2015",	"Out-2015", "Nov-2015",]
+    query_is2 = """
+                SELECT 
+                ROUND((
+                    SUM(IF(credit="%s", value, 0))-
+                    SUM(IF(debit="%s", value, 0))
+                ),2)
+                AS Fluxo    
+                FROM journal
+                GROUP BY YEAR(date_cash), MONTH(date_cash)
+                ORDER BY Year(date_cash), MONTH(date_cash) DESC
+                """ % params2
 
 
-	# print datas
+    cursor.execute(query_is2)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    
+    series2 = [i[0] for i in rows]
+    # lista = [dict(itertools.izip([col[0] for col in desc], row)) 
+    #   for row in rows]
 
-	chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
-	series = [{"name": 'Salario', "data": salario}, {"name": 'Combustivel', "data": combustivel}]
-	title = {"text": 'Salario'}
-	xAxis = {"categories": datas}
-	yAxis = {"title": {"text": 'Valor'}}
-	
-	return render_template('reports.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
+    cnx.commit()
+
+    query_datas =   """
+                    SELECT DATE_FORMAT(date_cash, '%b-%y') FROM journal
+                    GROUP BY month(date_cash), year(date_cash) ORDER BY date_cash ASC
+                    """
+
+    cursor.execute(query_datas)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    # datas = [i[0] for i in rows]
+
+    cnx.commit()
+
+    datas = [   "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015", "Dez-2015",
+                "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015",
+                "Out-2015", "Nov-2015", "Dez-2015", "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015",
+                "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015",]
+
+
+    # print datas
+
+    chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
+    series = [{"name": 'label', "data": series1}, {"name": 'label', "data": series2}]
+    title = {"text": 'Series Selecionadas'}
+    xAxis = {"categories": datas}
+    yAxis = {"title": {"text": 'Valor'}}
+    
+    return render_template('reports.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)

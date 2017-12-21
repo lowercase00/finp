@@ -9,7 +9,7 @@ db = 	{
 		'pwd': '',
 		'host': 'localhost',
 		'baseteste': 'base_teste',
-		'baseprod': 'base'
+		'baseprod': 'db_finp'
 		}
 
 #WTForms
