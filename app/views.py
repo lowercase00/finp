@@ -17,6 +17,10 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/_journal', methods=['GET', 'POST'])
+def journal():
+    return export_journal()
+
 
 @app.route('/_accounts')
 def accounts():
@@ -24,9 +28,7 @@ def accounts():
 
 
 
-@app.route('/_journal', methods=['GET', 'POST'])
-def journal():
-    return export_journal()
+
 
 
 

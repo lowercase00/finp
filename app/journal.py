@@ -19,10 +19,8 @@ def export_journal():
     cursor = cnx.cursor()
 
     query = """
-            SELECT ID, date_cash, credit, debit, description, value
-            FROM journal
-            ORDER BY date_cash DESC
-            LIMIT 50
+            SELECT CAST(ROUND(id,2) AS CHAR(10)), DATE_FORMAT(date_cash, '%b-%y'), credit, debit, CAST(ROUND(value,2) AS CHAR(10)) FROM journal
+            ORDER BY ID ASC
             """
     
     cursor.execute(query)
@@ -31,18 +29,10 @@ def export_journal():
     cnx.close()
     
     journal = [list(i) for i in rows]
+    journal = [[s.encode('ascii', 'ignore') for s in i] for i in journal]
 
-
-    journal = [ ['data 1', 'credito 1', 'item 1'],
-                ['data 2', 'credito 2', 'item 2'],
-                ['data 3', 'credito 3', 'item 3'],
-                ['data 4', 'credito 4', 'item 4'],
-                ['data 5', 'credito 5', 'item 5']]
 
     return render_template('journal.html', journal=journal)
-
-
-
 
 
 
@@ -77,8 +67,6 @@ def journal_entry():
     cnx.close()
 
     return redirect(url_for('ledger'))
-
-
 
 
 

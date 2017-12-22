@@ -6,35 +6,7 @@
 
 {% block content %}
 
-
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
-<script rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table-locale-all.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table-locale-all.min.js"></script> -->
-
-
-<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
-
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/fc-3.2.3/rg-1.0.2/datatables.min.js"></script>
-<script src="static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="static/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-<script src="static/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="static/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-<script src="static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-<script src="static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-<script src="static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-<script src="static/vendors/editablegrid/js/editablegrid-2.1.0-49.js"></script>
-<link rel="stylesheet" href="static/vendors/editablegrid/css/responsive.css" type="text/css" media="screen">
-<link rel="stylesheet" href="static/vendors/editablegrid/css/style.css" type="text/css" media="screen">
-
-
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 
 
 <!-- BOTÃO + INSERIR -->
@@ -138,35 +110,13 @@
 <!-- BOTÃO + UPLOAD -->
 
 
-
-
-<!--AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
-
-
-
-
 <!--TABELA DE DADOS-->
-<div class="page-title">
-    <div class="title_left">
-        <h3>Teste</h3>
-    </div>
-    <div class="title_right">
-        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="clearfix"></div>
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Teste</h2>
+                <h2>General Journal</h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -174,39 +124,38 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#">Settings 1</a>
-                            </li>
+                        </li>
                             <li><a href="#">Settings 2</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
+                        </li>
+                    </ul>
                 </ul>
                 <div class="clearfix"></div>
             </div>
-            <div class="x_content" id="exemplo">
-                    <table id="example"></table>
+            <div class="x_content" id="test">
+                <table id="journal_table" cellspacing="0" width="100%"></table>
             </div>
         </div>
     </div>
 </div>
 <!--TABELA DE DADOS-->
-
+<!-- " -->
 
 <script type="text/javascript">
     
 var journal = {{ journal|safe }}
 
 $(document).ready(function() {
-    $('#example').DataTable( {
+    $('#journal_table').DataTable({
         data: journal,
         columns: [
+            { title: "ID" },
             { title: "Date" },
             { title: "Credit" },
-            { title: "Debit" }
+            { title: "Debit" },
+            { title: "Value" }
         ]
-    } );
-} );
+    });
+});
 </script>
 
 

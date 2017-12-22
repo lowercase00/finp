@@ -98,8 +98,6 @@ def export_is():
 
 
 
-
-
 ##################### EXPORT HIGHCHART DATASET (FLOW) #####################
 
 def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 350):
@@ -110,20 +108,29 @@ def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 3
                             )
     cursor = cnx.cursor()
 
+    # query_accounts =    """
+    #                     SELECT account FROM accounts WHERE level = "Level 4"
+    #                     """
+
+    # cursor.execute(query_accounts)
+    # accounts = cursor.fetchone()  
+    testaccounts = [1, 2, 3, 4, 5]
+
+
     conta1 = request.form['series1']
     # conta1 = "Estacionamento"
     params1 = (conta1, conta1)
 
     query_is =  """
                 SELECT 
-                ROUND((
+                (
                     SUM(IF(credit="%s", value, 0))-
                     SUM(IF(debit="%s", value, 0))
-                ),2)
+                )
                 AS Fluxo    
                 FROM journal
                 GROUP BY YEAR(date_cash), MONTH(date_cash)
-                ORDER BY Year(date_cash), MONTH(date_cash) DESC
+                ORDER BY date_cash ASC
                 """ % params1
 
 
@@ -138,14 +145,14 @@ def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 3
 
     query_is2 = """
                 SELECT 
-                ROUND((
+                (
                     SUM(IF(credit="%s", value, 0))-
                     SUM(IF(debit="%s", value, 0))
-                ),2)
+                )
                 AS Fluxo    
                 FROM journal
                 GROUP BY YEAR(date_cash), MONTH(date_cash)
-                ORDER BY Year(date_cash), MONTH(date_cash) DESC
+                ORDER BY date_cash ASC
                 """ % params2
 
 
@@ -174,7 +181,7 @@ def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 3
     datas = [   "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015", "Dez-2015",
                 "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015",
                 "Out-2015", "Nov-2015", "Dez-2015", "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015",
-                "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015",]
+                "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015"]
 
 
     # print datas
@@ -185,4 +192,4 @@ def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 3
     xAxis = {"categories": datas}
     yAxis = {"title": {"text": 'Valor'}}
     
-    return render_template('reports.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
+    return render_template('reports.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, testaccounts=testaccounts)
