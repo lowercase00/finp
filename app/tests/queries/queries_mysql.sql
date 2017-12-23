@@ -202,3 +202,21 @@ UNION
 WHERE (report="Income Statement")
 GROUP BY Conta, YEAR(date_cash), MONTH(date_cash)
 ORDER BY date_cash ASC
+
+
+
+############################## Creates a function to get a specific report
+
+WITH RECURSIVE category_path (code, account, path) AS
+(
+  SELECT code, account, account as path
+    FROM accounts
+    WHERE parent IS NULL
+  UNION ALL
+  SELECT c.code, c.account, CONCAT(cp.path, ' > ', c.account)
+    FROM category_path AS cp
+    JOIN accounts AS c
+      ON cp.code = c.parent
+)
+SELECT * FROM category_path
+ORDER BY path

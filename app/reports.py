@@ -4,11 +4,12 @@ import mysql.connector as mariadb
 import json, jsonify, collections, itertools, csv
 import config as cfg
 import views
+import pandas as pd
 
 
 
 
-##################### EXPORT BALANCE SHEET ACCOUNTS (STOCK) #####################
+################################## EXPORT BALANCE SHEET ACCOUNTS (STOCK) ##################################
 
 def export_bs():
 
@@ -42,8 +43,8 @@ def export_bs():
             ORDER BY date_cash ASC
             """
 
-    df = pandas.read_sql(query, cnx)
-    report_bs = pandas.pivot_table(df, values='Value', index='Conta', columns='data')
+    df = pd.read_sql(query, cnx)
+    report_bs = pd.pivot_table(df, values='Value', index='Conta', columns='data')
 
     print df
 
@@ -53,7 +54,7 @@ def export_bs():
 
 
 
-##################### EXPORT INCOME STATEMENT ACCOUNTS (FLOW) #####################
+################################## EXPORT INCOME STATEMENT ACCOUNTS (FLOW) ##################################
 
 def export_is():
 
@@ -87,8 +88,8 @@ def export_is():
             ORDER BY date_cash ASC
             """
 
-    df = pandas.read_sql(query, cnx)
-    report_is = pandas.pivot_table(df, values='Value', index='Conta', columns='data')
+    df = pd.read_sql(query, cnx)
+    report_is = pd.pivot_table(df, values='Value', index='Conta', columns='data')
 
     print df
 
@@ -96,12 +97,11 @@ def export_is():
 
 
 
+################################## EXPORT HIGHCHART DATASET (FLOW) ##################################
 
+def chart_test(chartID = 'chart_ID', chart_height = 350):
 
-##################### EXPORT HIGHCHART DATASET (FLOW) #####################
-
-def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 350):
-
+    print "test1"
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
                             database=cfg.db['baseprod']
@@ -114,82 +114,60 @@ def chart_test(chartID = 'chart_ID', chart_type = 'areaspline', chart_height = 3
 
     # cursor.execute(query_accounts)
     # accounts = cursor.fetchone()  
-    testaccounts = [1, 2, 3, 4, 5]
 
+    conta = request.form['series']
+    params = (conta, conta)
 
-    conta1 = request.form['series1']
-    # conta1 = "Estacionamento"
-    params1 = (conta1, conta1)
-
-    query_is =  """
+    query =  """
                 SELECT 
                 (
                     SUM(IF(credit="%s", value, 0))-
                     SUM(IF(debit="%s", value, 0))
                 )
-                AS Fluxo    
+                AS fluxo    
                 FROM journal
                 GROUP BY YEAR(date_cash), MONTH(date_cash)
                 ORDER BY date_cash ASC
-                """ % params1
+                """ % (params)
 
-
-    cursor.execute(query_is)
-    rows = cursor.fetchall()
-    desc = cursor.description
-    series1 = [i[0] for i in rows]
-
-    conta2 = request.form['series2']
-    # conta2 = "Salario"
-    params2 = (conta2, conta2)
-
-    query_is2 = """
-                SELECT 
-                (
-                    SUM(IF(credit="%s", value, 0))-
-                    SUM(IF(debit="%s", value, 0))
-                )
-                AS Fluxo    
-                FROM journal
-                GROUP BY YEAR(date_cash), MONTH(date_cash)
-                ORDER BY date_cash ASC
-                """ % params2
-
-
-    cursor.execute(query_is2)
-    rows = cursor.fetchall()
-    desc = cursor.description
-    
-    series2 = [i[0] for i in rows]
-    # lista = [dict(itertools.izip([col[0] for col in desc], row)) 
-    #   for row in rows]
-
+    df = pd.read_sql(query, cnx)
+    series = df['fluxo'].tolist()
+    mavg = df.rolling(window=12, center=False).mean()
+    mavg = mavg.fillna("null")
+    mavg = mavg['fluxo'].tolist()
+    series_label = str(conta)
     cnx.commit()
 
-    query_datas =   """
-                    SELECT DATE_FORMAT(date_cash, '%b-%y') FROM journal
-                    GROUP BY month(date_cash), year(date_cash) ORDER BY date_cash ASC
-                    """
+    # query_datas =   """
+    #                 SELECT DATE_FORMAT(date_cash, '%b-%y') FROM journal
+    #                 GROUP BY month(date_cash), year(date_cash) ORDER BY date_cash ASC
+    #                 """
 
-    cursor.execute(query_datas)
-    rows = cursor.fetchall()
-    desc = cursor.description
+    # datas = pd.read_sql(query_datas, cnx)
+    # datas = df['date_cash'].tolist()
     # datas = [i[0] for i in rows]
-
-    cnx.commit()
+    # cnx.commit()
 
     datas = [   "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015", "Dez-2015",
-                "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015", "Jul-2015", "Ago-2015", "Set-2015",
-                "Out-2015", "Nov-2015", "Dez-2015", "Jan-2015", "Fev-2015", "Mar-2015", "Abr-2015", "Mai-2015", "Jun-2015",
-                "Jul-2015", "Ago-2015", "Set-2015", "Out-2015", "Nov-2015"]
+                "Jan-2016", "Fev-2016", "Mar-2016", "Abr-2016", "Mai-2016", "Jun-2016", "Jul-2016", "Ago-2016", "Set-2016",
+                "Out-2016", "Nov-2016", "Dez-2016", "Jan-2017", "Fev-2017", "Mar-2017", "Abr-2017", "Mai-2017", "Jun-2017",
+                "Jul-2017", "Ago-2017", "Set-2017", "Out-2017", "Nov-2017"]
 
 
-    # print datas
-
-    chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
-    series = [{"name": 'label', "data": series1}, {"name": 'label', "data": series2}]
+    chart = {"renderTo": chartID, "height": chart_height}
+    series1 = {"name": series_label, "data": series, "type": 'column'}
+    series2 = {"name": 'Moving Average', "data": mavg, "type": 'spline'}
     title = {"text": 'Series Selecionadas'}
-    xAxis = {"categories": datas}
+    xAxis = {"categories": datas, "crosshair": 'true'}
     yAxis = {"title": {"text": 'Valor'}}
     
-    return render_template('reports.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, testaccounts=testaccounts)
+    return render_template(
+                            'reports.html',
+                            chartID=chartID,
+                            chart=chart,
+                            series1=series1,
+                            series2=series2,
+                            title=title,
+                            xAxis=xAxis,
+                            yAxis=yAxis
+                            )

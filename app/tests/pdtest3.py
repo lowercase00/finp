@@ -1,4 +1,4 @@
-import pandas
+import pandas as pd
 import mysql.connector as mariadb
 import matplotlib.pyplot as plt
 import json
@@ -9,24 +9,24 @@ import jsonify
 cnx = mariadb.connect(user='root', password='', database='db_finp')
 cursor = cnx.cursor()
 
+conta = "salario"
+params = (conta, conta)
 query = """
         SELECT 
         (
             SUM(IF(credit="%s", value, 0))-
             SUM(IF(debit="%s", value, 0))
         )
-        AS Fluxo    
+        AS fluxo    
         FROM journal
         GROUP BY YEAR(date_cash), MONTH(date_cash)
         ORDER BY date_cash ASC
-		"""
+		""" % params
 
-df = pandas.read_sql(query, cnx)
-df['data'] = pandas.to_datetime(df['data'], format='%m-%y')
-df = df.sort_values(by=['code'])
+df = pd.read_sql(query, cnx)
+df_series = df['fluxo'].tolist()
+df_avg = df.rolling(window=6, center=False).mean()
+df_avg = df_avg['fluxo'].tolist()
 
-report_is = pandas.pivot_table(df, values='Value', index='Conta', columns='data')
-report_is = report_is.fillna(0)
-json_file = report_is.reset_index().to_json('file.json', orient='records')
 
-print json_file
+print df_avg

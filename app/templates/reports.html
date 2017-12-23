@@ -8,7 +8,7 @@
 <div class="container fluid">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Income Statement <small>Sessions</small></h2>
+            <h2>Income Statement</h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                 </li>
@@ -26,23 +26,25 @@
             </ul>
             <div class="clearfix"></div>
         </div>
-            <form class="form-horizontal form-label-left" method="POST" action="/_reports">
-                <div class="form-group">
-                    <label>Série 1</label>
-                    <input class="form-control" id="series1" name="series1" placeholder="Enter the first series">
+        <form class="form-horizontal form-label-left" method="POST" action="/_reports">
+        <div class="form-group">
+            <div class="col-lg-6">
+                <label>Série</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="test" name="series" placeholder="Digite o nome da conta...">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">Buscar</button>
+                    </span>
                 </div>
-                <div class="form-group">
-                    <label>Série 2</label>
-                    <input class="form-control" id="series2" name="series2" placeholder="Enter the second series">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+            </div>
+        </form>
 
 
         <div id={{ chartID|safe }} class="chart" style="height: 100px; width: 90%"></div>
         <script>
             var chart_id = {{ chartID|safe }}
-            var series = {{ series|safe }}
+            var series1 = {{ series1|safe }}
+            var series2 = {{ series2|safe }}
             var title = {{ title|safe }}
             var xAxis = {{ xAxis|safe }}
             var yAxis = {{ yAxis|safe }}
@@ -50,17 +52,82 @@
         </script>    
         <script>
             
-                $(document).ready(function() {
-                    $(chart_ID).highcharts({
-                        chart: chart,
-                        title: title,
-                        xAxis: xAxis,
-                        yAxis: yAxis,
-                        series: series
-                    });
-                });
+            $(document).ready(function() {
+                $(chart_ID).highcharts( {
+                chart: chart,
+                title: {
+                    text: 'Monthly Flow of Account'
+                },
+                subtitle: {
+                    text: '12 Months Moving Average'
+                },
+                xAxis: xAxis,
+                yAxis: { 
+                        data: yAxis,
+                        plotBands: [
 
-
+                            { // Faixa 1
+                                from: 0,
+                                to: 2499,
+                                color: 'rgba(68, 170, 213, 0.1)',
+                                label: {
+                                    text: 'Passando fome',
+                                    style: {
+                                        color: '#606060'
+                                    }
+                                }
+                            }, 
+                            { // Faixa 2
+                                from: 2500,
+                                to: 5000,
+                                color: 'rgba(0, 0, 0, 0)',
+                                label: {
+                                    text: 'Muito pobre',
+                                    style: {
+                                        color: '#606060'
+                                    }
+                                }
+                            }, 
+                            { // Faixa 3
+                                from: 5000,
+                                to: 7500,
+                                color: 'rgba(68, 170, 213, 0.1)',
+                                label: {
+                                    text: 'Pobre',
+                                    style: {
+                                        color: '#606060'
+                                    }
+                                }
+                            },
+                            { // Faixa 4
+                                from: 7500,
+                                to: 10000,
+                                color: 'rgba(0, 0, 0, 0)',
+                                label: {
+                                    text: 'ok',
+                                    style: {
+                                        color: '#606060'
+                                    }
+                                }
+                            }]
+                        },
+                tooltip: {
+                    shared: true
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    floating: true,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                series: [
+                    series1,
+                    series2
+                ]
+            });
+        });
+    
         </script>
 <!--         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
  -->        <script src="http://code.highcharts.com/highcharts.js"></script>

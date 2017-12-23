@@ -7,9 +7,7 @@ import views
 
 
 
-
-
-################## COMPLETE CHART OF ACCOUNTS ##################
+################################## COMPLETE CHART OF ACCOUNTS ##################################
 
 def get_all_accounts():
 
@@ -53,7 +51,7 @@ def get_all_accounts():
 
 
 
-################## BALANCE SHEET ACCOUNTS ##################
+################################## BALANCE SHEET ACCOUNTS ##################################
 
 def get_bs_accounts():
 
@@ -95,7 +93,7 @@ def get_bs_accounts():
 
 
 
-################## INCOME STATEMENT ACCOUNTS ##################
+################################## INCOME STATEMENT ACCOUNTS ##################################
 
 def get_is_accounts():
 

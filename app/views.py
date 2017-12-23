@@ -5,6 +5,7 @@ import json, jsonify, collections, itertools, csv
 import config as cfg
 import journal
 import accounts
+from tests import test_function
 from reports import chart_test
 from journal import export_journal
 
@@ -27,17 +28,6 @@ def accounts():
     return render_template("accounts.html")
 
 
-
-
-
-
-
-@app.route('/_budget')
-def budget():
-    return render_template("budget.html")
-
-
-
 @app.route('/_reports', methods=['GET', 'POST'])
 def reports():        
     if request.method == "GET":
@@ -46,10 +36,19 @@ def reports():
         return chart_test()
 
 
-
 @app.route('/_forecast')
 def forecast():
     return render_template("forecast.html")
+
+
+
+@app.route('/_tests')
+def tests():
+    return test_function()
+
+
+
+
 
 
 
