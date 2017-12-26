@@ -47,35 +47,13 @@ def tests():
     return test_function()
 
 
+@app.route('/_project')
+def project():
+    return makereport()
 
 
 
 
-
-
-################# TEMPLATE VIEWS #################
-
-
-@app.route('/_datatable', methods=['GET', 'POST'])
-def datatable():
-    return render_template("datatable.html")
-
-
-
-@app.route('/_jquerytabledit', methods=['GET', 'POST'])
-def jquerytabledit():
-    return render_template("jquerytabledit.html")
-
-
-
-@app.route('/_editablegrid', methods=['GET', 'POST'])
-def editablegrid():
-    return render_template("editablegrid.html")
-
-
-@app.route('/_xeditable', methods=['GET', 'POST'])
-def xeditable():
-    return render_template("xeditable.html")
 
 
 @app.route('/_chartest', methods=['GET', 'POST'])
