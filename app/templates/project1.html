@@ -168,18 +168,23 @@
 	</div>
 </div>
 
-<div class="scrolling-wrapper" style=".scrolling-wrapper {
+<div class="scrolling-wrapper">
+<style type="text/css">
+    
+.scrolling-wrapper {
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
-}">
+}
 
+</style>
 <p> This table is the Pandas DataFrame (to_html). It is the result of that query, in a Pivot table. So this is a good idea of how the data should be displayed. It is also a good idea on how to pass data from MySQL to Flask to HTML.</p>
 
 
 {{ isdata|safe }}
 
 </div>
+
 
 <script type="text/javascript">
     var dataset = {{ isdata|safe }}
