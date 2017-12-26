@@ -132,7 +132,10 @@ def chart_test(chartID = 'chart_ID', chart_height = 350):
 
     df = pd.read_sql(query, cnx)
     series = df['fluxo'].tolist()
-    mavg = df.rolling(window=12, center=False).mean()
+
+    # window = request.select['window']
+
+    mavg = df.rolling(window=6, center=False).mean()
     mavg = mavg.fillna("null")
     mavg = mavg['fluxo'].tolist()
     series_label = str(conta)
