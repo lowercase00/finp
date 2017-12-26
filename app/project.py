@@ -1,9 +1,11 @@
 ## We can use this to work on the project
 # THis is what I have to far, you can run this code to see how the DataFrame is organized
 
-
+from app import app
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector as mariadb
 import json, jsonify, collections, itertools, csv
+import config as cfg
 import pandas as pd
 
 
@@ -48,7 +50,5 @@ def makereport():
     json        = report_is.to_json()
 
     dataset     = df
-
-    print report_is
 
     return render_template('project1.html', isdata=dataset)

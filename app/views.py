@@ -5,7 +5,7 @@ import json, jsonify, collections, itertools, csv
 import config as cfg
 import journal
 import accounts
-from tests import test_function
+from project import makereport
 from reports import chart_test
 from journal import export_journal
 

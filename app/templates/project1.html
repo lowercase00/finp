@@ -23,13 +23,12 @@
     	<div class="col-md-12 col-sm-12 col-xs-12">
         	<div class="x_panel">
             	<div class="x_title">
-                	<h2>General Journal</h2>
+                	<h2>Income Statement Project</h2>
                 	<div class="clearfix"></div>
             	</div>
+                    <p> This HTML code has a table that is collapsable by category, and that has the "sum" functionality for parent accounts - you can see in the code that it sums the values of the child accounts, maybe there's something you can use in here</p>
             	<div class="x_content" id="test">
                 
-
-
 
     <table id="treegrid1"></table>
 
@@ -38,12 +37,12 @@
 
             var dataSource = [
                 {
-                    "number": "1000", "name": "Assets", "balance": "", "assets": [
+                    "number": "1000", "name": "Assets", "balance": "", "balance": "", "assets": [
                         {
                             "number": "1003", "name": "Fixed assets", "balance": "", "assets": [
                                 {
                                     "number": "1115", "name": "Lands and Buildings", "balance": "", "assets": [
-                                        { "number": "1120", "name": "Lands and Buildings", "balance": 11111 },
+                                        { "number": "1120", "name": "Lands and Buildings", "balance": 1254 },
                                         { "number": "1130", "name": "Increases during the year", "balance": 147 },
                                         { "number": "1140", "name": "Decreases during the year", "balance": 345 },
                                         { "number": "1132", "name": "Accum. Depreciation, Buildings", "balance": 526 },
@@ -56,11 +55,11 @@
                                     ]
                                 },
                                 {
-                                    "number": "1300", "name": "Vehicles", "balance": "", "assets": [
+                                    "number": "1300", "name": "Vehicles", "balance": "", "balance": "",  "assets": [
                                         { "number": "1390", "name": "Vehicles, Total", "balance": 758 }
                                     ]
                                 },
-                                { "number": "1990", "name": "Fixed assets, Total", "balance": 10000000 }
+                                { "number": "1990", "name": "Fixed assets, Total", "balance": 7394 }
                             ]
                         },
                         {
@@ -87,17 +86,45 @@
                 columns: [
                     { headerText: "Number", 
                         key: "number", 
-                        width: "40%", 
+                        width: "20%", 
                         dataType: "number" },
                     
                     { headerText: "Name", 
                         key: "name", 
-                        width: "40%", 
+                        width: "20%", 
                         dataType: "string" },
                     
-                    { headerText: "Balance", 
+                   { headerText: "Jan2017", 
                         key: "balance", 
-                        width: "20%", 
+                        width: "12%", 
+                        dataType: "number", 
+                        formatter: balanceSum, 
+                        template: "$ ${balance}" },
+
+                   { headerText: "Feb2017", 
+                        key: "balance", 
+                        width: "12%", 
+                        dataType: "number", 
+                        formatter: balanceSum, 
+                        template: "$ ${balance}" },
+
+                   { headerText: "Mar2017", 
+                        key: "balance", 
+                        width: "12%", 
+                        dataType: "number", 
+                        formatter: balanceSum, 
+                        template: "$ ${balance}" },
+
+                    { headerText: "Apr2017", 
+                        key: "balance", 
+                        width: "12%", 
+                        dataType: "number", 
+                        formatter: balanceSum, 
+                        template: "$ ${balance}" },
+
+                    { headerText: "May2017", 
+                        key: "balance", 
+                        width: "12%", 
                         dataType: "number", 
                         formatter: balanceSum, 
                         template: "$ ${balance}" }
