@@ -45,10 +45,13 @@ def makereport():
     df          = pd.read_sql(query, cnx)
     df['data']  = pd.to_datetime(df['data'], format='%m-%y')
     df          = df.set_index(['data', 'parent', 'code'])
+    
     report_is   = pd.pivot_table(df, values='Value', index=['parent', 'code', 'Conta'], columns='data')
-    group       = df.groupby(['data', 'parent', 'Conta']).sum()
-    json        = report_is.to_json()
+    report_is   = report_is.fillna(0)
 
-    dataset     = df
+    group       = df.groupby(['data', 'parent', 'Conta']).sum()
+    
+    json        = report_is.to_json()
+    dataset     = report_is.to_html()
 
     return render_template('project1.html', isdata=dataset)
