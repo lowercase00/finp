@@ -5,7 +5,7 @@ import json, jsonify, collections, itertools, csv
 import config as cfg
 import journal
 import accounts
-from project import makereport
+from project import make_is_report
 from reports import chart_test
 from journal import export_journal
 
@@ -52,7 +52,7 @@ def tests():
 
 @app.route('/_project')
 def project():
-    return makereport()
+    return make_is_report()
 
 
 
