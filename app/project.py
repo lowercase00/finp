@@ -1,3 +1,5 @@
+# -*- coding: latin-1 -*-
+
 ## We can use this to work on the project
 # THis is what I have to far, you can run this code to see how the DataFrame is organized
 
@@ -10,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 
-def makereport():
+def make_is_report():
 
     cnx = mariadb.connect(  user='root',
                             password='',
@@ -20,43 +22,119 @@ def makereport():
     cursor = cnx.cursor()
 
     query = """
-            SELECT date_format(date_cash, '%m-%y') as data, Conta, ROUND(sum(valor), 2) as Value, parent, account, code
-
+            SELECT date_format(date_cash, '%m-%y') as data, conta as Level4, ROUND(sum(valor), 2) as Value, parent, account, code
                 FROM (
-
-                    SELECT parent, code, act_debit.report AS report, date_cash, debit AS Conta, account, SUM(CASE WHEN act_debit.nature = 0 THEN value ELSE -value END) AS valor 
+                    SELECT parent, code, act_debit.report AS report, date_cash, debit AS conta, account, SUM(CASE WHEN act_debit.nature = 0 THEN value ELSE -value END) AS valor 
                     FROM journal 
                     RIGHT JOIN accounts AS act_debit ON act_debit.account = journal.debit
                     GROUP BY debit, YEAR(date_cash), MONTH(date_cash)
-
                 UNION
-
-                    SELECT parent, code, act_credit.report AS report, date_cash, credit AS Conta, account, SUM(CASE WHEN act_credit.nature = 0 THEN value ELSE -value END) AS valor
+                    SELECT parent, code, act_credit.report AS report, date_cash, credit AS conta, account, SUM(CASE WHEN act_credit.nature = 0 THEN value ELSE -value END) AS valor
                     FROM journal
                     RIGHT JOIN accounts AS act_credit ON act_credit.account = journal.credit
                     GROUP BY credit, YEAR(date_cash), MONTH(date_cash)
-
                 ) AS aliastabela
-
             WHERE (report="Income Statement")
-            GROUP BY Conta, YEAR(date_cash), MONTH(date_cash)
+            GROUP BY conta, YEAR(date_cash), MONTH(date_cash)
             ORDER BY date_cash ASC
             """
 
-    df          = pd.read_sql(query, cnx)
-    df['data']  = pd.to_datetime(df['data'], format='%m-%y')
-    df          = df.set_index(['data', 'parent', 'code'])
+    right          = pd.read_sql(query, cnx)
+    right['data']  = pd.to_datetime(right['data'], format='%m-%y')
+
+
+    accounts = "accounts"
+    params = (accounts, accounts, accounts, accounts)
     
-    report_is   = pd.pivot_table(df, values='Value', index=['parent', 'code', 'Conta'], columns='data')
+    cursor = cnx.cursor()
+
+    query = """
+            SELECT
+            t1.account AS Level1,
+            t2.account AS Level2,
+            t3.account AS Level3,
+            t4.account AS Level4
+
+            FROM %s AS t1
+
+            LEFT JOIN %s AS t2 ON t2.parent = t1.code
+            LEFT JOIN %s AS t3 ON t3.parent = t2.code
+            LEFT JOIN %s AS t4 ON t4.parent = t3.code
+
+            WHERE      
+            t1.account = 'Receitas' OR
+            t1.account = 'Despesas' OR
+            t1.account = 'Nao Operacionais';
+            """ % (params)
+
+    left        = pd.read_sql(query, cnx)
+
+    report_is   = pd.merge(left, right)
+    report_is   = pd.pivot_table(report_is, values='Value', index=['Level1', 'Level2', 'Level3', 'Level4'], columns=['data'])
     report_is   = report_is.fillna(0)
 
-    json        = report_is.to_json()
     dataset     = report_is.to_html()
 
-    # group = group.append(report_is)
+    return render_template('project1.html', isdata=dataset)
 
-    pprint json
 
-    # return render_template('project1.html', isdata=dataset)
 
-print makereport()
+def GetISLevel():
+
+    cnx = mariadb.connect(  user='root',
+                            password='',
+                            database='db_finp'
+                            )
+
+    cursor = cnx.cursor()
+
+    level1 =    """
+                SELECT code, account, parent
+                FROM accounts
+                WHERE level = 1
+                AND report = "Income Statement"
+                """
+
+    cursor.execute(level1)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    is_l1_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
+
+    level2 =    """
+                SELECT code, account, parent
+                FROM accounts
+                WHERE level = 2
+                AND report = "Income Statement"
+                """
+
+    cursor.execute(level2)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    is_l2_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
+
+    level3 =    """
+                SELECT code, account, parent
+                FROM accounts
+                WHERE level = 3
+                AND report = "Income Statement"
+                """
+
+    cursor.execute(level3)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    is_l3_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
+
+    level4 =    """
+                SELECT code, account, parent
+                FROM accounts
+                WHERE level = 4
+                AND report = "Income Statement"
+                """
+
+    cursor.execute(level4)
+    rows = cursor.fetchall()
+    desc = cursor.description
+    is_l4_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
+
+    chart = is_l4_accounts + is_l3_accounts + is_l2_accounts + is_l1_accounts
+    chart = json.dumps(chart)

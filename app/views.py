@@ -15,7 +15,10 @@ from journal import export_journal
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    if request.method == "POST":
+        print request
+    else: 
+        return render_template("index.html")
 
 
 @app.route('/_journal', methods=['GET', 'POST'])
