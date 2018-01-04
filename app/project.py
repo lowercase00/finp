@@ -10,6 +10,7 @@ import json, jsonify, collections, itertools, csv
 import config as cfg
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 
 def make_is_report():
@@ -21,6 +22,7 @@ def make_is_report():
 
     cursor = cnx.cursor()
 
+    # This query gets the "stacked" version of the Income Statement (IS).
     query = """
             SELECT date_format(date_cash, '%m-%y') as data, conta as Level4, ROUND(sum(valor), 2) as Value, parent, account, code
                 FROM (
@@ -39,10 +41,12 @@ def make_is_report():
             ORDER BY date_cash ASC
             """
 
-    right          = pd.read_sql(query, cnx)
-    right['data']  = pd.to_datetime(right['data'], format='%m-%y')
+    # IS to a dataframe (right so it can be joined with the accounts dataframe ahead)
+    right           = pd.read_sql(query, cnx)
+    right['data']   = pd.to_datetime(right['data'], format='%m-%y')
 
 
+    # This query is to get the full hierarchical tree of the Chart of Accounts
     accounts = "accounts"
     params = (accounts, accounts, accounts, accounts)
     
@@ -67,76 +71,43 @@ def make_is_report():
             t1.account = 'Nao Operacionais';
             """ % (params)
 
+    # Full tree saved into a dataframe
     left        = pd.read_sql(query, cnx)
 
+
+    # The join of the tree (left) and the pivoted income statement
     report_is   = pd.merge(left, right)
+
+    # This is the Income Statement in it's regular form - all 4 level of accounts on the left side, dates on the columns
     report_is   = pd.pivot_table(report_is, values='Value', index=['Level1', 'Level2', 'Level3', 'Level4'], columns=['data'])
     report_is   = report_is.fillna(0)
 
+    # Grouped sum of the Level 1 accounts
+    l1_sum      = report_is.groupby(level=[0]).sum()
+    l1_sum      = l1_sum.transpose()
+    l1_sum      = l1_sum.round(2)
+    l1_sum      = l1_sum.to_dict()
+    
+    # Grouped sum of the Level 2 accounts
+    l2_sum      = report_is.groupby(level=[1]).sum()
+    l2_sum      = l2_sum.transpose()
+    l2_sum      = l2_sum.round(2)
+    l2_sum      = l2_sum.to_dict()
+    
+    # Grouped sum of the Level 3 accounts
+    l3_sum      = report_is.groupby(level=[2]).sum()
+    l3_sum      = l3_sum.round(2)
+    l3_sum      = l3_sum.transpose()
+    l3_sum      = l3_sum.to_dict()
+
+    # Grouped sum of the Level 4 accounts
+    l4_sum      = pd.pivot_table(right, values='Value', index='data', columns='Level4')
+    l4_sum      = l4_sum.fillna(0)
+    l4_sum      = l4_sum.round(2)
+    l4_sum      = l4_sum.to_dict()
+
+
+    # Rendering the Income Statement to HTML so help visualization
     dataset     = report_is.to_html()
-
     return render_template('project1.html', isdata=dataset)
 
-
-
-def GetISLevel():
-
-    cnx = mariadb.connect(  user='root',
-                            password='',
-                            database='db_finp'
-                            )
-
-    cursor = cnx.cursor()
-
-    level1 =    """
-                SELECT code, account, parent
-                FROM accounts
-                WHERE level = 1
-                AND report = "Income Statement"
-                """
-
-    cursor.execute(level1)
-    rows = cursor.fetchall()
-    desc = cursor.description
-    is_l1_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
-
-    level2 =    """
-                SELECT code, account, parent
-                FROM accounts
-                WHERE level = 2
-                AND report = "Income Statement"
-                """
-
-    cursor.execute(level2)
-    rows = cursor.fetchall()
-    desc = cursor.description
-    is_l2_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
-
-    level3 =    """
-                SELECT code, account, parent
-                FROM accounts
-                WHERE level = 3
-                AND report = "Income Statement"
-                """
-
-    cursor.execute(level3)
-    rows = cursor.fetchall()
-    desc = cursor.description
-    is_l3_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
-
-    level4 =    """
-                SELECT code, account, parent
-                FROM accounts
-                WHERE level = 4
-                AND report = "Income Statement"
-                """
-
-    cursor.execute(level4)
-    rows = cursor.fetchall()
-    desc = cursor.description
-    is_l4_accounts = [dict(itertools.izip([col[0] for col in desc], row)) for row in rows]
-
-    chart = is_l4_accounts + is_l3_accounts + is_l2_accounts + is_l1_accounts
-    chart = json.dumps(chart)
-
-    return render_template('project1.html', isdata=dataset)

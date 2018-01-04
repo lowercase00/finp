@@ -36,7 +36,7 @@ def reports():
     if request.method == "GET":
         return render_template("reports.html")
     else:
-        return chart_test()
+        return single_account()
 
 
 @app.route('/_forecast')

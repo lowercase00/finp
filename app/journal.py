@@ -11,6 +11,10 @@ import datetime
 
 ################################## EXPORT JOURNAL ##################################
 
+
+## This gets all of the journal entries and sends it to Javascript to be rendered by
+## the Datatable plug-in
+
 def export_journal():
     cnx = mariadb.connect(  user=cfg.db['user'],
                             password=cfg.db['pwd'],
@@ -41,6 +45,9 @@ def export_journal():
 
 ################################## MANUAL INPUT IN LEDGER ##################################
 
+
+## Function to get the User input form the form and input it into the Journal on the database
+##
 def journal_entry():
     
     cnx = mariadb.connect(  user=cfg.db['user'],
@@ -55,11 +62,11 @@ def journal_entry():
                 VALUES (%s, %s, %s, %s, %s)
                 """
 	
-    data = request.form['data']
-    cred = request.form['credito']
-    deb = request.form['debito']
-    desc = request.form['descricao']
-    valor = request.form['valor']
+    data    = request.form['data']
+    cred    = request.form['credito']
+    deb     = request.form['debito']
+    desc    = request.form['descricao']
+    valor   = request.form['valor']
 
 
     registro = (data, cred, deb, desc, valor)
@@ -76,6 +83,9 @@ def journal_entry():
 
 ################################## CSV IMPORT IN LEDGER ##################################
 
+
+## This will be a function to import an CSV upload to the journal, don't think it's working at the moment
+##
 def journal_import_csv():
     
     cnx = mariadb.connect(  user=cfg.db['user'],
@@ -103,6 +113,10 @@ def journal_import_csv():
 
 
 ################################## ACCOUNT IMPORT IN LEDGER ##################################
+
+
+## Future function to import only on account to the journal
+##
 
 # def journal_import_csv_account():
 

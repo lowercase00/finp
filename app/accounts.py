@@ -9,6 +9,9 @@ import views
 
 ################################## COMPLETE CHART OF ACCOUNTS ##################################
 
+
+## Get's the full tree of accounts
+##
 def get_all_accounts():
 
     cnx = mariadb.connect(  user=cfg.db['user'],
@@ -46,6 +49,7 @@ def get_all_accounts():
     rows = cursor.fetchall()        
     cnx.commit()
     all_accounts = json.dumps(rows)
+
     return all_accounts
 
 
@@ -53,6 +57,8 @@ def get_all_accounts():
 
 ################################## BALANCE SHEET ACCOUNTS ##################################
 
+## Gets all Balance Sheet accounts
+##
 def get_bs_accounts():
 
     cnx = mariadb.connect(  user=cfg.db['user'],
@@ -87,6 +93,7 @@ def get_bs_accounts():
     rows = cursor.fetchall()        
     cnx.commit()
     bs_accounts = json.dumps(rows)
+
     return bs_accounts
 
 
@@ -95,6 +102,8 @@ def get_bs_accounts():
 
 ################################## INCOME STATEMENT ACCOUNTS ##################################
 
+## Gets all Income Statement accounts
+##
 def get_is_accounts():
 
     cnx = mariadb.connect(  user=cfg.db['user'],
@@ -130,8 +139,6 @@ def get_is_accounts():
     rows = cursor.fetchall()        
     cnx.commit()
     is_accounts = json.dumps(rows)
+
     return is_accounts
-
-
-
 
